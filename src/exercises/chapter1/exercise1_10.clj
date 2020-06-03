@@ -241,3 +241,7 @@
 ;- The Goodstein function
 ;
 ;Reference: https://en.wikipedia.org/wiki/Primitive_recursive_function
+
+; In the video below, professor David Brailsford, from the School of Computer Science and Information Technology of the
+;   University of Nottingham, UK, describes Ackermann function as the "The Most Difficult Program to Compute"
+; https://www.youtube.com/watch?v=i7sm9dzFtEI
