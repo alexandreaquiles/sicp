@@ -18,15 +18,30 @@
 (map f (range 10))
 ; => (0 1 2 4 11 25 59 142 335 796)
 
-;(defn f [n]
-;  (defn f-iter [n a b c]
-;    (if (< n 3)
-;      n
-;      (f-iter (+  ))))
-;  )
-;
-;
+; ITERATIVE PROCESS
+(defn f [n]
+  (defn f-iter [a b c count]
+    (if (= count 0)
+      a
+      (f-iter b c (+ c (* 2 b) (* 3 a) ) (dec count))))
+  (f-iter 0 1 2 n))
 
+;Based on fib-iter
+;Reference: http://community.schemewiki.org/?sicp-ex-1.11
 
+(f 0)
+; => 0
 
+(f 1)
+; => 1
 
+(f 2)
+; => 2
+
+(f 3)
+;f(2) + 2f(1) + 3f(0)
+;2 + 2 + 0
+; => 4
+
+(map f (range 10))
+; => (0 1 2 4 11 25 59 142 335 796)
