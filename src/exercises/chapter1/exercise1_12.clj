@@ -28,16 +28,9 @@
 
 (defn pascal-rule [n, k]
   (assert (and (>= n k) (>= k 0))) ;n ≥ k ≥ 0
-  (if (= k 0)
+  (if (zero? k)
     1
     (* (pascal-rule n (- k 1)) (/ (- (+ n 1) k) k))))
-
-(defn pascal-triangle [last-row]
-  (defn pascal-triangle-for-row [row]
-    (map (partial pascal-rule row) (range (inc row)) ))
-  (map pascal-triangle-for-row (range (inc last-row))))
-
-; Reference: https://en.wikipedia.org/wiki/Pascal%27s_triangle#Calculating_a_row_or_diagonal_by_itself
 
 (pascal-rule 0 0)
 ;=> 1
@@ -46,6 +39,10 @@
 ;=> 1
 (pascal-rule 1 1)
 ;=> 1
+
+;(pascal-rule 1 2)
+; Execution error (AssertionError)
+;Assert failed: (and (>= n k) (>= k 0))
 
 (pascal-rule 2 0)
 ;=> 1
@@ -63,8 +60,25 @@
 (pascal-rule 3 3)
 ;=> 1N
 
+(defn pascal-triangle [last-row]
+  (defn pascal-triangle-for-row [row]
+    (map (partial pascal-rule row) (range (inc row)) ))
+  (map pascal-triangle-for-row (range (inc last-row))))
+
+; Reference: https://en.wikipedia.org/wiki/Pascal%27s_triangle#Calculating_a_row_or_diagonal_by_itself
+
 (pascal-triangle 3)
 ; => ((1) (1 1) (1 2 1N) (1 3 3 1N))
 
 (pascal-triangle 7)
 ; => ((1) (1 1) (1 2 1N) (1 3 3 1N) (1 4 6N 4N 1N) (1 5 10 10 5N 1N) (1 6 15N 20N 15N 6N 1N) (1 7 21 35N 35N 21N 7N 1N))
+
+;(defn pascal-triangle [last-row]
+;  (map (fn [n] (map (fn [k] (pascal-rule n k)) (range (inc n)))) (range (inc last-row))))
+
+;(defn pascal-triangle [last-row]
+;  (defn pascal-rule-for-n [n]
+;    (defn pascal-rule-for-n-and-k [k] (pascal-rule n k))
+;    (map pascal-rule-for-n-and-k (range (inc n))))
+;  (map pascal-rule-for-n (range (inc last-row))))
+;currying
