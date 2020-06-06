@@ -93,3 +93,4 @@ Fib(n) < Fib(n) - Fib(n) + φ<sup>n</sup>/√5 < Fib(n) + 1
 Fib(n) < φ<sup>n</sup>/√5 < Fib(n) + 1
 
 Reference: https://codology.net/post/sicp-solution-exercise-1-13/
+(In this link there's an error: it states that 0 < ψ < 1, which is false.)
