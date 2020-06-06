@@ -34,7 +34,7 @@
     (println "cbrt-iter -> guess:" guess ", x:" x )
     (if (good-enough? guess x)
             guess
-            (cbrt-iter (improve guess x) x)))
+            (recur (improve guess x) x)))
   (cbrt-iter 1.0 x))
 
 (println (cbrt 27))

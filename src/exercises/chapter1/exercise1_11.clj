@@ -23,7 +23,7 @@
   (defn f-iter [a b c count]
     (if (= count 0)
       a
-      (f-iter b c (+ c (* 2 b) (* 3 a) ) (dec count))))
+      (recur b c (+ c (* 2 b) (* 3 a) ) (dec count))))
   (f-iter 0 1 2 n))
 
 ;Based on fib-iter

@@ -11,19 +11,19 @@
   (+ (square x) (square y)))
 
 (defn abs [x]
-  (cond ((< x 0) (- x))
-        (else x)))
+  (cond (< x 0) (- x)
+        :else x))
 
 (defn abs [x]
   (if (< x 0)
     (- x)
     x))
 
-(defn >= [x y]
-  (or (> x y) (= x y)))
-
-(defn >= [x y]
-  (not (< x y)))
+;(defn >= [x y]
+;  (or (> x y) (= x y)))
+;(defn >= [x y]
+;  (not (< x y)))
+;WARNING: operators >= and <= already defined in Clojure
 
 ;(defn sqrt-iter [guess x]
 ;  (if (good-enough? guess x)
@@ -43,7 +43,9 @@
 ;(defn sqrt [x]
 ;  (sqrt-iter 1.0 x))
 
-(defn (sqrt x)
+(defn sqrt [x]
+  (defn average [x y]
+    (/ (+ x y) 2))
   (defn good-enough? [guess]
     (< (abs (- (square guess) x)) 0.001))
   (defn improve [guess]
@@ -51,7 +53,7 @@
   (defn sqrt-iter [guess]
     (if (good-enough? guess)
       guess
-      (sqrt-iter (improve guess))))
+      (recur (improve guess))))
   (sqrt-iter 1.0))
 
 (defn factorial [n]
@@ -59,25 +61,32 @@
     1
     (* n (factorial (- n 1)))))
 
-(map factorial (range 1 5))
-; => (1 2 6 24)
+(assert (= '(1 2 6 24 120 720) (map factorial (range 1 7))))
 
 ;(factorial 0)
 ; throws StackOverflowError
 ; could do (if (< n 1) 1 ...)
 
-(defn factorial [n]
+(defn factorial-iterative-sicp [n]
   (defn fact-iter [product counter max-count]
     (if (> counter max-count)
       product
-      (fact-iter (* counter product)
+      (recur (* counter product)
                  (+ counter 1)
                  max-count)))
   (fact-iter 1 1 n))
 
-(map factorial (range 0 5))
+(map factorial-iterative-sicp (range 0 5))
 ; => (1 1 2 6 24)
 
+(defn factorial-iterative [n]
+  (defn fact-iter [fac n]
+    (if (zero? n)
+      fac
+      (recur (* fac n) (dec n))))
+  (fact-iter 1 n))
+
+(assert (= '(1 2 6 24 120 720) (map factorial-iterative (range 1 7))))
 
 (defn fib [n]
   (cond (= n 0) 0
@@ -92,7 +101,7 @@
   (defn fib-iter [a b count]
     (if (= count 0)
       b
-      (fib-iter (+ a b) a (- count 1))))
+      (recur(+ a b) a (- count 1))))
   (fib-iter 1 0 n))
 (map fib (range 10))
 ; => (0 1 1 2 3 5 8 13 21 34)
