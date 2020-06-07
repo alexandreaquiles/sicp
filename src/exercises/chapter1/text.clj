@@ -143,3 +143,48 @@
                        kinds-of-coins))))
   (cc amount 5))
 (count-change 100)
+
+(defn expt [b n]
+  (if (= n 0)
+    1
+    (* b (expt b (- n 1)))))
+
+(expt 2 3)
+; => 8
+
+(expt 2 4)
+; => 16
+
+(defn expt-iterative [b n]
+  (defn expt-iter [b counter product]
+    (if (= counter 0)
+      product
+      (expt-iter b (- counter 1) (* b product))))
+  (expt-iter b n 1))
+
+(expt-iterative 2 3)
+; => 8
+
+(expt-iterative 2 4)
+; => 16
+
+(defn fast-expt [b n]
+  (cond (= n 0) 1
+        (even? n) (square (fast-expt b (/ n 2)))
+        :else (* b (fast-expt b (- n 1)))))
+
+(fast-expt 2 3)
+; => 8
+
+;(fast-expt 2 3)
+;(* 2 (fast-expt 2 2))
+;(* 2 (square (fast-expt 2 1)))
+;(* 2 (square (* 2 (fast-expt 2 0))))
+;(* 2 (square (* 2 1)))
+
+(fast-expt 2 4)
+; => 16
+
+;Already defined in Clojure
+;(define (even? n)
+;        (= (remainder n 2) 0))
