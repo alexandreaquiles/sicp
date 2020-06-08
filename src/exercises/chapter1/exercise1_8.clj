@@ -30,12 +30,11 @@
   (/ (+ (/ x (square guess)) (* 2 guess)) 3))
 
 (defn cbrt [x]
-  (defn cbrt-iter [guess x]
+  (loop [guess 1.0]
     (println "cbrt-iter -> guess:" guess ", x:" x )
     (if (good-enough? guess x)
             guess
-            (recur (improve guess x) x)))
-  (cbrt-iter 1.0 x))
+            (recur (improve guess x)))))
 
 (println (cbrt 27))
 ; => 3.0000005410641766

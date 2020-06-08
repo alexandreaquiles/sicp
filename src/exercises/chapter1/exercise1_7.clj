@@ -42,12 +42,10 @@
     (< square-of-guess-to-radicand 0.001)))
 
 (defn sqrt [x]
-  (defn sqrt-iter [guess x]
+  (loop [guess 1.0]
     (if (good-enough? guess x)
             guess
-            (sqrt-iter (improve guess x)
-                        x)))
-  (sqrt-iter 1.0 x))
+            (recur (improve guess x)))))
 
 (sqrt 0.1)
 ; => 0.316245562280389
@@ -403,11 +401,10 @@
      (* guess 0.001)))
 
 (defn sqrt [x]
-  (defn sqrt-iter [guess oldguess x]
+  (loop [guess 1.0 oldguess 2.0]
     (if (good-enough? guess oldguess)
       guess
-      (sqrt-iter (improve guess x) guess x)))
-  (sqrt-iter 1.0 2.0 x))
+      (recur (improve guess x) guess))))
 
 (sqrt 0.006)
 ; => 0.0774596672879806

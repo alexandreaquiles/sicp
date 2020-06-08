@@ -20,11 +20,10 @@
 
 ; ITERATIVE PROCESS
 (defn f [n]
-  (defn f-iter [a b c count]
+  (loop [a 0 b 1 c 2 count n]
     (if (= count 0)
       a
-      (recur b c (+ c (* 2 b) (* 3 a) ) (dec count))))
-  (f-iter 0 1 2 n))
+      (recur b c (+ c (* 2 b) (* 3 a) ) (dec count)))))
 
 ;Based on fib-iter
 ;Reference: http://community.schemewiki.org/?sicp-ex-1.11
@@ -43,5 +42,5 @@
 ;2 + 2 + 0
 ; => 4
 
-(map f (range 10))
+(assert (= '(0 1 2 4 11 25 59 142 335 796) (map f (range 10))))
 ; => (0 1 2 4 11 25 59 142 335 796)
