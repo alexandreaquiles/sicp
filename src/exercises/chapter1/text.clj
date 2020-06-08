@@ -188,3 +188,17 @@
 ;Already defined in Clojure
 ;(define (even? n)
 ;        (= (remainder n 2) 0))
+
+(rem 28 16)
+; => 12
+
+(defn gcd [a b]
+  (if (= b 0)
+    a
+    (recur b (rem a b))))
+
+(gcd 28 16)
+; => 4
+
+(gcd 206 40)
+; => 2
