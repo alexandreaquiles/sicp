@@ -26,7 +26,10 @@
 ; The predicate expression is evaluated first, and the result determines
 ;   whether to evaluate the consequent or the alternative expression.
 
-(defn gcd [a b] (if (= b 0) a (recur b (rem a b))))
+(defn gcd [a b]
+  (if (= b 0)
+    a
+    (recur b (rem a b))))
 
 ;applicative-order evaluation
 (gcd 206 40)
@@ -80,9 +83,3 @@
 ;                                                                                                                                                                                                                                                                 2
 ; rem + 2 rem + 4 rem + 7 rem + 4 rem
 ; rem performed 18 times
-
-(rem 206 40)                                                         ; => 6
-(rem 40 (rem 206 40))                                                ; => 4
-(rem (rem 206 40) (rem 40 (rem 206 40)))                             ; => 2
-(rem (rem 40 (rem 206 40)) (rem (rem 206 40) (rem 40 (rem 206 40)))) ; => 0
-
