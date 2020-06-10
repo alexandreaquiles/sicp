@@ -14,10 +14,10 @@
   (* x x))
 
 (defn fast-expt-iterative [b n]
-  (loop [n n, a 1]
-    (cond (<= n 0) (if (<= a b) a (/ a b))
-          (even? n) (recur (/ n 2) (* (square b) a))
-          :else (recur (dec n) (* b a)))))
+  (loop [n n, b b, a 1]
+    (cond (= n 0) a
+          (even? n) (recur (/ n 2) (square b) a)
+          :else (recur (dec n) b (* b a)))))
 
 (assert (= '(1 2 4 8 16) (map (partial fast-expt-iterative 2) (range 5))))
 
