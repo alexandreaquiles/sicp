@@ -70,4 +70,4 @@
 ; => -0.39980345741334
 
 ;a) 5
-;b) a/3 until a ! > 0.1
+;b) a/3 until a ! > 0.1; so it's is proportional do a/3 n times, or O(log n)
