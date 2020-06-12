@@ -18,9 +18,9 @@
   (/ x 2))
 
 (defn fast-multiply-iterative [a b]
-  (loop [b b c 0]
-    (cond (<= b 0) (if (<= c a) c (- c a))
-          (even? b) (recur (halve b) (+ (double a) c))
-          :else (recur (dec b) (+ a c)))))
+  (loop [a a b b c 0]
+    (cond (<= b 0) c
+          (even? b) (recur (double a) (halve b) c)
+          :else (recur a (dec b) (+ a c)))))
 
 (assert (= '(0 2 4 6 8) (map (partial fast-multiply-iterative 2) (range 5))))
