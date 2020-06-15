@@ -210,6 +210,9 @@
         (divides? test-divisor n) test-divisor
         :else (find-divisor n (+ test-divisor 1))))
 
+; The end test for find-divisor is based on the fact that if n is not prime it must have a divisor less than or equal to √n.
+; Footnote: If d is a divisor of n, then so is n/d. But d and n/d cannot both be greater than √n.
+
 (defn smallest-divisor [n]
   (find-divisor n 2))
 
@@ -227,12 +230,24 @@
 (defn fermat-test [n]
   (defn try-it [a]
     (= (expmod a n n) a))
-  (try-it (+ 1 (rand (- n 1)))))
+  (try-it (+ 1 (rand-int (- n 1)))))
 
 (defn fast-prime? [n times]
   (cond (= times 0) true
         (fermat-test n) (fast-prime? n (- times 1))
         :else false))
 
-;(fast-prime? 1999 1000)
-;??????
+;(defn fermat-test [n]
+;  (let [a (inc (rand-int (dec n)))]
+;    (= (expmod a n n) a)))
+;(defn fast-prime?
+;  ([n] (fast-prime? n 50))
+;  ([n num-tests]
+;     (every? true? (take num-tests (repeatedly #(fermat-test n))))))
+;from: http://www.sicpdistilled.com/section/1.2.6/
+
+(fast-prime? 2 1000)
+; => true
+
+(fast-prime? 1999 1000)
+; => true
