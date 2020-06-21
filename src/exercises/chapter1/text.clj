@@ -251,3 +251,89 @@
 
 (fast-prime? 1999 1000)
 ; => true
+
+(defn sum-integers [a b]
+  (if (> a b)
+    0
+    (+ a (sum-integers (+ a 1) b))))
+(sum-integers 1 5)
+; => 15
+
+(defn cube [x]
+  (* x x x))
+
+(defn sum-cubes [a b]
+  (if (> a b)
+    0
+    (+ (cube a)
+       (sum-cubes (+ a 1) b))))
+(sum-cubes 1 5)
+;=> 225
+
+(+ (cube 1) (cube 2) (cube 3) (cube 4) (cube 5))
+;=> 225
+
+;just for fun
+(defn sum-integers-iterative [a b]
+  (assert (and (pos? a) (pos? b)))
+  (loop [a a sum 0]
+    (if (> a b)
+      sum
+      (recur (inc a) (+ sum a) ))))
+(sum-integers-iterative 1 5)
+; => 15
+
+(defn pi-sum [a b]
+  (if (> a b)
+    0
+    (+ (/ 1.0 (* a (+ a 2))) (pi-sum (+ a 4) b))))
+
+;π/8 ~= 0.39269908169
+
+(pi-sum 1 10000)
+;=> 0.3926740816989741
+
+(pi-sum 1 50000)
+;=> 0.3926940816987261
+
+(pi-sum 1 60000)                                            ;~max without StackOverflow
+;=> 0.3926949150320586
+
+(defn sum [term a next b]
+  (if (> a b)
+    0
+    (+ (term a)
+       (sum term (next a) next b))))
+
+(defn sum-cubes [a b]
+  (sum cube a inc b))
+
+(sum-cubes 1 10)
+; => 3025
+
+(defn sum-integers [a b]
+  (sum identity a inc b))
+
+(sum-integers 1 10)
+; => 55
+
+(defn pi-sum [a b]
+  (defn pi-term [x]
+    (/ 1.0 (* x (+ x 2))))
+  (defn pi-next [x]
+    (+ x 4))
+  (sum pi-term a pi-next b))
+
+(* 8 (pi-sum 1 1000))
+; => 3.139592655589783
+
+(defn integral [f a b dx]
+  (defn add-dx [x] (+ x dx))
+  (* (sum f (+ a (/ dx 2.0)) add-dx b)
+     dx))
+
+(integral cube 0 1 0.01)
+; => 0.24998750000000042
+
+(integral cube 0 1 0.001)
+; => 0.249999875000001
