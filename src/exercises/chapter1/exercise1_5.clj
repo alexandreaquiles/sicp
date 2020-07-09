@@ -24,7 +24,7 @@
 ;     The predicate expression is evaluated first, and the result determines whether to evaluate the
 ;       consequent or the alternative expression.)
 
-(defn [p] (p))
+(defn p [] (p))
 
 (defn test [x y]
   (if (= x 0)
