@@ -19,42 +19,54 @@
     (- x)
     x))
 
-;(defn >= [x y]
-;  (or (> x y) (= x y)))
-;(defn >= [x y]
-;  (not (< x y)))
+(defn >= [x y]
+  (or (> x y) (= x y)))
+(defn >= [x y]
+  (not (< x y)))
 ;WARNING: operators >= and <= already defined in Clojure
 
-;(defn sqrt-iter [guess x]
-;  (if (good-enough? guess x)
-;    guess
-;    (sqrt-iter (improve guess x)
-;      x)))
-;
-;(defn improve [guess x]
-;  (average guess (/ x guess)))
-;
-;(defn average [x y]
-;  (/ (+ x y) 2))
-;
-;(defn good-enough? [guess x]
-;  (< (abs (- (square guess) x)) 0.001))
-;
-;(defn sqrt [x]
-;  (sqrt-iter 1.0 x))
+(defn sqrt-iter [guess x]
+  (if (good-enough? guess x)
+    guess
+    (sqrt-iter (improve guess x)
+      x)))
+
+(defn improve [guess x]
+  (average guess (/ x guess)))
+
+(defn average [x y]
+  (/ (+ x y) 2))
+
+(defn good-enough? [guess x]
+  (< (abs (- (square guess) x)) 0.001))
 
 (defn sqrt [x]
-  (defn average [x y]
+  (sqrt-iter 1.0 x))
+
+(sqrt 9)
+; => 3.00009155413138
+
+(sqrt 2)
+; => 1.4142156862745097
+
+(defn sqrt [x]
+  (defn internal-average [x y]
     (/ (+ x y) 2))
-  (defn good-enough? [guess]
+  (defn internal-good-enough? [guess]
     (< (abs (- (square guess) x)) 0.001))
-  (defn improve [guess]
-    (average guess (/ x guess)))
-  (defn sqrt-iter [guess]
-    (if (good-enough? guess)
+  (defn internal-improve [guess]
+    (internal-average guess (/ x guess)))
+  (defn internal-sqrt-iter [guess]
+    (if (internal-good-enough? guess)
       guess
-      (recur (improve guess))))
-  (sqrt-iter 1.0))
+      (recur (internal-improve guess))))
+  (internal-sqrt-iter 1.0))
+
+(sqrt 9)
+; => 3.00009155413138
+
+(sqrt 2)
+; => 1.4142156862745097
 
 (defn factorial [n]
   (if (= n 1)
@@ -80,11 +92,10 @@
 ; => (1 1 2 6 24)
 
 (defn factorial-iterative [n]
-  (defn fact-iter [fac n]
+  (loop [fac 1 n n]
     (if (zero? n)
       fac
-      (recur (* fac n) (dec n))))
-  (fact-iter 1 n))
+      (recur (* fac n) (dec n)))))
 
 (assert (= '(1 2 6 24 120 720) (map factorial-iterative (range 1 7))))
 
@@ -142,7 +153,9 @@
                    (cc (- amount (first-denomination kinds-of-coins))
                        kinds-of-coins))))
   (cc amount 5))
+
 (count-change 100)
+;=> 292
 
 (defn expt [b n]
   (if (= n 0)
@@ -256,6 +269,7 @@
   (if (> a b)
     0
     (+ a (sum-integers (+ a 1) b))))
+
 (sum-integers 1 5)
 ; => 15
 
@@ -267,6 +281,7 @@
     0
     (+ (cube a)
        (sum-cubes (+ a 1) b))))
+
 (sum-cubes 1 5)
 ;=> 225
 
@@ -280,6 +295,7 @@
     (if (> a b)
       sum
       (recur (inc a) (+ sum a) ))))
+
 (sum-integers-iterative 1 5)
 ; => 15
 
@@ -293,10 +309,12 @@
 (pi-sum 1 10000)
 ;=> 0.3926740816989741
 
-(pi-sum 1 50000)
+;(pi-sum 1 50000)
+;can throw StackOverflowError in the first run
 ;=> 0.3926940816987261
 
-(pi-sum 1 60000)                                            ;~max without StackOverflow
+;(pi-sum 1 60000) ;~max without StackOverflow
+;can throw StackOverflowError in the first run
 ;=> 0.3926949150320586
 
 (defn sum [term a next b]
@@ -337,3 +355,121 @@
 
 (integral cube 0 1 0.001)
 ; => 0.249999875000001
+
+(fn [x] (+ x 4))
+
+(fn [x] (/ 1.0 (* x (+ x 2))))
+
+(defn pi-sum [a b]
+  (sum (fn [x] (/ 1.0 (* x (+ x 2))))
+       a
+       (fn [x] (+ x 4))
+       b))
+
+(pi-sum 1 10000)
+;=> 0.3926740816989741
+
+(defn integral [f a b dx]
+        (* (sum f
+                (+ a (/ dx 2.0))
+                (fn [x] (+ x dx))
+                b)
+           dx))
+
+(integral cube 0 1 0.01)
+; => 0.24998750000000042
+
+(defn plus4 [x] (+ x 4))
+
+(plus4 10)
+; => 14
+
+(def plus4-with-def (fn [x] (+ x 4)))
+
+(plus4-with-def 10)
+; => 14
+
+((fn [x y z] (+ x y (square z)))
+ 1 2 3)
+; => 12
+
+;Footnote 53
+; It would be clearer and less intimidating to people learning Lisp if a name more
+;   obvious than 'lambda' , such as 'make-procedure' , were used.
+; But the convention is firmly entrenched.
+; The notation is adopted from the λ-calculus, a mathematical formalism introduced by
+;   the mathematical logician Alonzo Church (1941).
+; Church developed the λ-calculus to provide a rigorous foundation for studying the
+;   notions of function and function application.
+; The λ-calculus has become a basic tool for mathematical investigations of the
+;   semantics of programming languages.
+
+;   f (x , y) = x(1 + xy)² + y(1 − y) + (1 + xy)(1 − y)
+; could also express as
+;   a = 1 + xy,
+;   b = 1 − y,
+;   f (x , y) = xa² + yb + ab.
+
+(defn f [x y]
+  (defn f-helper [a b]
+    (+ (* x (square a))
+       (* y b)
+       (* a b)))
+  (f-helper (+ 1 (* x y))
+            (- 1 y)))
+
+(f 10 20)
+; => 399811
+
+(defn f [x y]
+  ((fn [a b]
+     (+ (* x (square a))
+        (* y b)
+        (* a b)))
+   (+ 1 (* x y))
+   (- 1 y)))
+
+(f 10 20)
+; => 399811
+
+(defn f [x y]
+  (let [a (+ 1 (* x y))
+        b (- 1 y)]
+    (+ (* x (square a))
+       (* y b)
+       (* a b))))
+
+(f 10 20)
+; =>
+
+; From SICP:
+; No new mechanism is required in the interpreter in order to provide local variables.
+; A 'let' expression is simply syntactic sugar for the underlying 'lambda' application.
+
+; But 'let' is a macro in Clojure: there's the destructuring of the vector.
+
+(let [x 5]
+  (+ (let [x 3]
+       (+ x (* x 10))) ; internally x is 3, and the result is 33
+     x)) ; externally x is 5
+; => 38
+
+(let [x 2]
+  (let [x 3 y (+ x 2)]
+    (* x y)))
+; => 15
+; From SICP: will have the value 12 because, inside the body of the 'let' , x will
+;   be 3 and y will be 4 (which is the outer x plus 2)
+; But, in Clojure, y will be computed using the inner x
+
+(defn f [x y]
+  (def a (+ 1 (* x y)))
+  (def b (- 1 y))
+  (+ (* x (square a))
+     (* y b)
+     (* a b)))
+
+(f 10 20)
+; => 399811
+
+;In Clojure, when 'def' is used, there's no lexical scope
