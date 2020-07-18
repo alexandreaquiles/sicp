@@ -462,6 +462,12 @@
 ;   be 3 and y will be 4 (which is the outer x plus 2)
 ; But, in Clojure, y will be computed using the inner x
 
+(let [x 2]
+  (let [y (+ x 2) x 3]
+    (* x y)))
+; => 12
+; If we invert the expressions, we'll get 12
+
 (defn f [x y]
   (def a (+ 1 (* x y)))
   (def b (- 1 y))
