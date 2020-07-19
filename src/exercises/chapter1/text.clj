@@ -19,26 +19,26 @@
     (- x)
     x))
 
-(defn >= [x y]
-  (or (> x y) (= x y)))
-(defn >= [x y]
-  (not (< x y)))
+;(defn >= [x y]
+;  (or (> x y) (= x y)))
+;(defn >= [x y]
+;  (not (< x y)))
 ;WARNING: operators >= and <= already defined in Clojure
+
+(defn average [x y]
+  (/ (+ x y) 2))
+
+(defn improve [guess x]
+  (average guess (/ x guess)))
+
+(defn good-enough? [guess x]
+  (< (abs (- (square guess) x)) 0.001))
 
 (defn sqrt-iter [guess x]
   (if (good-enough? guess x)
     guess
     (sqrt-iter (improve guess x)
-      x)))
-
-(defn improve [guess x]
-  (average guess (/ x guess)))
-
-(defn average [x y]
-  (/ (+ x y) 2))
-
-(defn good-enough? [guess x]
-  (< (abs (- (square guess) x)) 0.001))
+               x)))
 
 (defn sqrt [x]
   (sqrt-iter 1.0 x))
@@ -84,8 +84,8 @@
     (if (> counter max-count)
       product
       (recur (* counter product)
-                 (+ counter 1)
-                 max-count)))
+             (+ counter 1)
+             max-count)))
   (fact-iter 1 1 n))
 
 (map factorial-iterative-sicp (range 0 5))
@@ -112,7 +112,7 @@
   (defn fib-iter [a b count]
     (if (= count 0)
       b
-      (recur(+ a b) a (- count 1))))
+      (recur (+ a b) a (- count 1))))
   (fib-iter 1 0 n))
 (map fib (range 10))
 ; => (0 1 1 2 3 5 8 13 21 34)
@@ -294,7 +294,7 @@
   (loop [a a sum 0]
     (if (> a b)
       sum
-      (recur (inc a) (+ sum a) ))))
+      (recur (inc a) (+ sum a)))))
 
 (sum-integers-iterative 1 5)
 ; => 15
@@ -370,11 +370,11 @@
 ;=> 0.3926740816989741
 
 (defn integral [f a b dx]
-        (* (sum f
-                (+ a (/ dx 2.0))
-                (fn [x] (+ x dx))
-                b)
-           dx))
+  (* (sum f
+          (+ a (/ dx 2.0))
+          (fn [x] (+ x dx))
+          b)
+     dx))
 
 (integral cube 0 1 0.01)
 ; => 0.24998750000000042
@@ -450,8 +450,8 @@
 
 (let [x 5]
   (+ (let [x 3]
-       (+ x (* x 10))) ; internally x is 3, and the result is 33
-     x)) ; externally x is 5
+       (+ x (* x 10)))                                      ; internally x is 3, and the result is 33
+     x))                                                    ; externally x is 5
 ; => 38
 
 (let [x 2]
@@ -479,3 +479,73 @@
 ; => 399811
 
 ;In Clojure, when 'def' is used, there's no lexical scope
+
+
+(defn close-enough? [x y]
+  (< (abs (- x y)) 0.001))
+
+(defn positive? [x]
+  (> x 0))
+
+(defn negative? [x]
+  (< x 0))
+
+(defn search [f neg-point pos-point]
+  (let [midpoint (average neg-point pos-point)]
+    (if (close-enough? neg-point pos-point)
+      midpoint
+      (let [test-value (f midpoint)]
+        (cond (positive? test-value) (search f neg-point midpoint)
+              (negative? test-value) (search f midpoint pos-point)
+              :else midpoint)))))
+
+(defn half-interval-method [f a b]
+  (let [a-value (f a)
+        b-value (f b)]
+    (cond (and (negative? a-value) (positive? b-value)) (search f a b)
+          (and (negative? b-value) (positive? a-value)) (search f b a)
+          :else (throw (ex-info "Values are not of opposite sign" {:a a :b b})))))
+
+;(half-interval-method Math/sin 2.0 4.0)
+;  Syntax error compiling at (text.clj:509:1).
+;  Unable to find static field: sin in class java.lang.Math
+
+(half-interval-method #(Math/sin %) 2.0 4.0)
+; => 3.14111328125
+
+;x³ − 2x − 3 = 0
+(half-interval-method (fn [x] (- (* x x x) (* 2 x) 3)) 1.0 2.0)
+; => 1.89306640625
+
+;A number x is called a fixed point of a function f if x satisfies the equation f (x) = x
+
+(def tolerance 0.00001)
+(defn fixed-point [f first-guess]
+  (defn close-enough? [v1 v2]
+    (< (abs (- v1 v2)) tolerance))
+  (defn try* [guess]
+    (let [next (f guess)]
+      (if (close-enough? guess next)
+        next
+        (try* next))))
+  (try* first-guess))
+
+; 'try' is a function for error handling in clojure.core
+
+(fixed-point #(Math/cos %) 1.0)
+; => 0.7390822985224024
+
+(fixed-point #(+ (Math/sin %) (Math/cos %)) 1.0)
+; => 1.2587315962971173
+
+(defn fixed-point-sqrt [x]
+  (fixed-point #(/ x %) 1.0))
+
+(fixed-point-sqrt 4)
+; Execution error (StackOverflowError)
+
+(defn fixed-point-sqrt-with-avg [x]
+  (fixed-point #(average % (/ x %)) 1.0))
+
+(fixed-point-sqrt-with-avg 4)
+; => 2.000000000000002
