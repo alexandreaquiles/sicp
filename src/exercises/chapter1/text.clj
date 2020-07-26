@@ -541,7 +541,7 @@
 (defn fixed-point-sqrt [x]
   (fixed-point #(/ x %) 1.0))
 
-(fixed-point-sqrt 4)
+;(fixed-point-sqrt 4)
 ; Execution error (StackOverflowError)
 
 (defn fixed-point-sqrt-with-avg [x]
@@ -549,3 +549,87 @@
 
 (fixed-point-sqrt-with-avg 4)
 ; => 2.000000000000002
+
+(defn average-damp [f]
+  (fn [x] (average x (f x))))
+
+((average-damp square) 10)
+; => 55
+
+(defn sqrt [x]
+  (fixed-point (average-damp (fn [y] (/ x y)))
+               1.0))
+
+(sqrt 4)
+; => 2.000000000000002
+
+(defn cube-root [x]
+  (fixed-point (average-damp (fn [y] (/ x (square y))))
+               1.0))
+
+(cube-root 8)
+; => 1.9999981824788517
+
+(def dx 0.00001)
+
+(defn deriv [g]
+  (fn [x] (/ (- (g (+ x dx)) (g x))
+             dx)))
+
+((deriv cube) 5)
+; => 75.00014999664018
+
+(defn newton-transform [g]
+  (fn [x] (- x (/ (g x) ((deriv g) x)))))
+
+(defn newtons-method [g guess]
+  (fixed-point (newton-transform g) guess))
+
+(defn sqrt [x]
+  (newtons-method (fn [y] (- (square y) x)) 1.0))
+
+(sqrt 4)
+; => 2.0000000000002385
+
+(map sqrt (map #(fast-expt % 2) (range 1 10)))
+; =>
+;   (1.0
+;    2.0000000000002385
+;    3.000000000000002
+;    4.000000000000851
+;    5.0
+;    6.000000000000004
+;    7.000000000000103
+;    8.000000000001208
+;    9.0)
+
+(defn fixed-point-of-transform [g transform guess]
+  (fixed-point (transform g) guess))
+
+(defn sqrt [x]
+  (fixed-point-of-transform (fn [y] (/ x y)) average-damp 1.0))
+
+(sqrt 4)
+; => 2.000000000000002
+
+(map sqrt (map #(fast-expt % 2) (range 1 10)))
+; => (1.0 2.000000000000002 3.0 4.000000000000051 5.0 6.0 7.000000000000002 8.00000000000017 9.0)
+
+(defn sqrt [x]
+  (fixed-point-of-transform (fn [y] (- (square y) x)) newton-transform 1.0))
+
+(sqrt 4)
+; => 2.0000000000002385
+
+(map sqrt (map #(fast-expt % 2) (range 1 10)))
+; =>
+;(1.0
+; 2.0000000000002385
+; 3.000000000000002
+; 4.000000000000851
+; 5.0
+; 6.000000000000004
+; 7.000000000000103
+; 8.000000000001208
+; 9.0)
+
