@@ -36,9 +36,13 @@
 
 (defn repeated [f n]
   (assert (>= n 1) "n should be >= 1")
+  (println "repeated" n)
   (if (= n 1)
     (fn [x] (f x))
     (compose f (repeated f (dec n)))))
+
+((repeated inc 5) 1)
+; => 6
 
 (def tolerance 0.00001)
 
@@ -46,17 +50,19 @@
   (defn close-enough? [v1 v2]
     (< (abs (- v1 v2)) tolerance))
   (defn try* [guess]
+    (println guess)
     (let [next (f guess)]
       (if (close-enough? guess next)
         next
-        (try* next))))
+        (recur next))))
   (try* first-guess))
 
 (defn sqrt-without-average-damp [x]
   (fixed-point #(/ x %) 1.0))
 
 ;(sqrt-without-average-damp 4)
-; Execution error (StackOverflowError)
+; infinite loop (doesn't converge)
+; loops among 1.0 and 4.0
 
 (defn average-damp [f]
   (fn [x] (average x (f x))))
@@ -83,7 +89,14 @@
                1.0))
 
 ;(fourth-root 16)
-;Execution error (StackOverflowError)
+; infinite loop (doesn't converge)
+; loops among
+;   2.0028086552649755
+;   1.997203149914594
+;   2.002808611045981
+;   1.997203193762308
+;   2.0028085668290734
+;   1.9972032376079585
 
 (defn fourth-root-with-two-average-damps [x]
   (fixed-point (average-damp (average-damp (fn [y] (/ x (expt y 3)))))
@@ -97,35 +110,52 @@
                1.0))
 
 ;(fifth-root-with-one-average-damp 32)
-;Execution error (StackOverflowError)
+; infinite loop (doesn't converge)
+; loops among
+;   2.880435013529815
+;   1.672645084943273
 
 (defn fifth-root-with-two-average-damps [x]
   (fixed-point (average-damp (average-damp (fn [y] (/ x (expt y 4)))))
                1.0))
 
 (fifth-root-with-two-average-damps 32)
-; => 2.000001512995761
+; => 2.0000015129957607
 
 (defn tenth-root-with-one-average-damp [x]
   (fixed-point (average-damp (fn [y] (/ x (expt y 9))))
                1.0))
 
 ;(tenth-root-with-one-average-damp 1024)
-;Execution error (StackOverflowError)
+; infinite loop (doesn't converge)
+; loops among
+;   2.416459403857477
+;   1.390474201658885
+;   27.046627862293004
+;   13.52331393121261
+;   6.76165699945343
+;   3.3808458294541985
+;   1.6992953258799115
 
 (defn tenth-root-with-two-average-damps [x]
   (fixed-point (average-damp (average-damp (fn [y] (/ x (expt y 9)))))
                1.0))
 
-;(tenth-root-with-two-average-damps 1024)
-;Execution error (StackOverflowError)
+(tenth-root-with-two-average-damps 1024)
+; infinite loop (doesn't converge)
+; loops among
+;   1.8705424690870849
+;   2.3160351646232864
+;   1.8705424690870855
+;   2.316035164623284
+;   1.8705424690870849
 
 (defn tenth-root-with-three-average-damps [x]
   (fixed-point (average-damp (average-damp (average-damp (fn [y] (/ x (expt y 9))))))
                1.0))
 
 (tenth-root-with-three-average-damps 1024)
-; => 2.0000011830103324
+; => 2.000001183010332
 
 (defn nth-root [n x]
   (assert (>= n 2))
@@ -140,14 +170,26 @@
 ; => 2.0
 
 (nth-root 3 8)
-; => 2.0000009087630515
+; => 1.9999995456190938
 
 (nth-root 4 16)
-; => 1.9829851551723494
+; infinite loop (doesn't converge)
+; loops among
+;   2.001140372548683
+;   1.998861579226812
+;   2.001140363658383
+;   1.9988615880866725
+;   2.0011403547682907
+;   1.998861596946325
+;   2.001140345878406
+;   1.9988616058057715
 
 (nth-root 5 32)
-;Syntax error (StackOverflowError)
-; some problem with my recursive process implmentation of repeated
+; infinite loop (doesn't converge)
+; loops among
+;   1.672645084943273
+;   2.880435013529815
+; some problem with my recursive process implementation of repeated
 
 (defn nth-root-without-repeated [n x]
   (assert (>= n 2))
@@ -173,8 +215,9 @@
 ; 7.999999625995246
 ; 8.999999529937377)
 
-(map #(nth-root 4 %) '(1 16 81 256 625 1296 2401 4096 6561))
-; Error printing return value (StackOverflowError)
+;(map #(nth-root 4 %) '(1 16 81 256 625 1296 2401 4096 6561))
+; infinite loop (doesn't converge)
+; loops among
 
 (map #(nth-root-without-repeated 4 %) '(1 16 81 256 625 1296 2401 4096 6561))
 ; =>
