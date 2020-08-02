@@ -93,3 +93,15 @@
 (print-rat (add-rat one-third one-third))
 ; 2/3
 ; => nil
+
+(defn make-rat [n d] (cons n (cons d '())))
+
+(defn numer [x]
+  (let [g (gcd (first x) (first (rest x)))]
+    (/ (first x) g)))
+
+(defn denom [x]
+  (let [g (gcd (first x) (first (rest x)))]
+    (/ (first (rest x)) g)))
+
+(print-rat (add-rat one-third one-third))
