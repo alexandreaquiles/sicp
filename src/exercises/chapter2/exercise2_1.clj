@@ -56,17 +56,17 @@
 ; n <  0 and d < 0 => negates both n and d
 
 ; negative rat
-; n >= 0 and d < 0 => doesn't need to do nothing
-; n <  0 and d > 0 => negates both n and d
+; n >= 0 and d < 0 => negates both n and d
+; n <  0 and d > 0 => doesn't need to do nothing
 
 (defn should-negate-rat? [n d]
   (or (and (neg-int? n) (neg-int? d))
-      (and (neg-int? n) (pos-int? d))))
+      (and (pos-int? n) (neg-int? d))))
 
 (assert (false? (should-negate-rat? 1 2)))
 (assert (true? (should-negate-rat? -1 -2)))
-(assert (false? (should-negate-rat? 1 -2)))
-(assert (true? (should-negate-rat? -1 2)))
+(assert (true? (should-negate-rat? 1 -2)))
+(assert (false? (should-negate-rat? -1 2)))
 
 (defn normalize-rat [n d]
   (if (should-negate-rat? n d)
@@ -94,20 +94,20 @@
 ; 1/2
 ; => nil
 
-(print-rat (make-rat 1 -2))
-; 1/-2
+(print-rat (make-rat 1 2))
+; -1/-2
 ; => nil
 
 (print-rat (make-rat 2 -4))
-; 1/-2
+; -1/2
 ; => nil
 
 (print-rat (make-rat -1 2))
-; 1/-2
+; -1/2
 ; => nil
 
 (print-rat (make-rat -2 4))
-; 1/-2
+; -1/2
 ; => nil
 
 (print-rat (add-rat (make-rat 1 3) (make-rat 1 3)))
