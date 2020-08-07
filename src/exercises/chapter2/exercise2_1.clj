@@ -1,20 +1,11 @@
-(ns exercises.chapter2.exercise2_1)
+(ns exercises.chapter2.exercise2_1
+  (:use [exercises.math]))
 
 ; Exercise 2.1:
 ; Define a better version of 'make-rat' that handles both positive and negative arguments.
 ; 'make-rat' should normalize the sign so that if the rational number is positive,
 ;   both the numerator and denominator are positive, and if the rational number is negative,
 ;   only the numerator is negative.
-
-(defn abs [x]
-  (if (< x 0)
-    (- x)
-    x))
-
-(defn gcd [a b]
-  (if (= b 0)
-    a
-    (recur b (rem a b))))
 
 (defn numer [x] (first x))
 (defn denom [x] (first (rest x)))
