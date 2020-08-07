@@ -1,5 +1,5 @@
 (ns exercises.chapter2.exercise2_1
-  (:use [exercises.math]))
+  (:use exercises.math))
 
 ; Exercise 2.1:
 ; Define a better version of 'make-rat' that handles both positive and negative arguments.
@@ -61,8 +61,8 @@
 
 (defn normalize-rat [n d]
   (if (should-negate-rat? n d)
-     (cons (- n) (cons (- d) '()))
-     (cons n (cons d '() ))))
+    (cons (- n) (cons (- d) '()))
+    (cons n (cons d '()))))
 
 (defn make-rat [n d]
   (assert (not= d 0))

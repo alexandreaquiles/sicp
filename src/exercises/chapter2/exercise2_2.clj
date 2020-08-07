@@ -1,5 +1,5 @@
 (ns exercises.chapter2.exercise2_2
-  (:use [exercises.math]))
+  (:use exercises.math))
 
 ; Exercise 2.2:
 ; Consider the problem of representing line segments in a plane.

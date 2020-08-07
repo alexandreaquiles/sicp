@@ -1,5 +1,6 @@
 (ns exercises.chapter2.exercise2_3
-  (:use [exercises.math exercises.chapter2.exercise2_2]))
+  (:use exercises.math
+        exercises.chapter2.exercise2_2))
 
 ;Exercise 2.3:
 ; Implement a representation for rectangles in a plane.
