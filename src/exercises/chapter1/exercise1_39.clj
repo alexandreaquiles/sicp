@@ -41,20 +41,14 @@
 (tan-cf 0 10)
 ; => 0
 
-;(Math/tan 1)
-; => 1.5574077246549023
-(tan-cf 1 10)
-; => 3645485/2340739 (~ 1.557407724654479)
+(Math/tan (/ Math/PI 4))
+; => 0.9999999999999999
 
-;(Math/tan (/ Math/PI 2))
-; => 1.633123935319537E16
-(tan-cf (/ Math/PI 2) 10)
-; => 4.309201793203909E9
-;(tan-cf (/ Math/PI 2) 20)
-; Syntax error (ArithmeticException) Divide by zero
+(tan-cf (/ Math/PI 4) 10)
+; => 0.9999999999999958
 
-;(Math/tan Math/PI)
-; => -1.2246467991473532E-16
-(tan-cf Math/PI 10)
-; => -1.5203918510336283E-5
+(Math/tan (/ Math/PI 3))
+; => 1.7320508075688767
 
+(tan-cf (/ Math/PI 3) 10)
+; => 1.7320508075678038
