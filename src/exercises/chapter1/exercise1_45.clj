@@ -38,8 +38,17 @@
   (assert (>= n 1) "n should be >= 1")
   (println "repeated" n)
   (if (= n 1)
-    (fn [x] (f x))
+    ;(fn [x] (f x))
+    f
     (compose f (repeated f (dec n)))))
+
+;(define (repeated f n)
+;        (if (= n 1)
+;          f
+;          (compose f (repeated f (- n 1)))))
+
+((repeated square 2) 5)
+; => 625
 
 ((repeated inc 5) 1)
 ; => 6
@@ -50,7 +59,7 @@
   (defn close-enough? [v1 v2]
     (< (abs (- v1 v2)) tolerance))
   (defn try* [guess]
-    (println guess)
+    ;(println guess)
     (let [next (f guess)]
       (if (close-enough? guess next)
         next
@@ -141,7 +150,7 @@
   (fixed-point (average-damp (average-damp (fn [y] (/ x (expt y 9)))))
                1.0))
 
-(tenth-root-with-two-average-damps 1024)
+;(tenth-root-with-two-average-damps 1024)
 ; infinite loop (doesn't converge)
 ; loops among
 ;   1.8705424690870849
@@ -163,7 +172,7 @@
     (repeated
       (average-damp
         (fn [y] (/ x (expt y (dec n)))))
-      3)
+      4)
     1.0))
 
 (nth-root 2 4)
@@ -172,7 +181,7 @@
 (nth-root 3 8)
 ; => 1.9999995456190938
 
-(nth-root 4 16)
+;(nth-root 4 16)
 ; infinite loop (doesn't converge)
 ; loops among
 ;   2.001140372548683
@@ -184,7 +193,7 @@
 ;   2.001140345878406
 ;   1.9988616058057715
 
-(nth-root 5 32)
+;(nth-root 5 32)
 ; infinite loop (doesn't converge)
 ; loops among
 ;   1.672645084943273
