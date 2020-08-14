@@ -49,8 +49,8 @@
 ; => 2.0000000929222947
 
 (defn rectangle-perimeter [rectangle]
-  (+ (segment-length (horizontal-rectangle-segment rectangle))
-     (segment-length (vertical-rectangle-segment rectangle))))
+  (* 2 (+ (segment-length (horizontal-rectangle-segment rectangle))
+          (segment-length (vertical-rectangle-segment rectangle)))))
 
 (defn rectangle-area [rectangle]
   (* (segment-length (horizontal-rectangle-segment rectangle))
@@ -67,8 +67,8 @@
 (def r (make-rectangle h v))
 
 (println (rectangle-perimeter r))
-; a = 12, b=2 then p = 14
-; => 14.000000105330983
+; a = 12, b=2 then p = 28
+; => 28.000000210661966
 
 (println (rectangle-area r))
 ; a = 12, b=2 then a = 24
@@ -96,8 +96,8 @@
 (def r (make-rectangle-with-points hs he vs ve))
 
 (println (rectangle-perimeter r))
-; a = 12, b=2 then p = 14
-; => 14.000000105330983
+; a = 12, b=2 then p = 28
+; => 28.000000210661966
 
 (println (rectangle-area r))
 ; a = 12, b=2 then a = 24
