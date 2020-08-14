@@ -11,35 +11,7 @@
 ; Can you design your system with suitable abstraction barriers, so that the same perimeter and area procedures will
 ;   work using either representation?
 
-;this is too implementation specific
-(defn validate-horizontal-segment [horizontal-segment]
-  (let [y-point-start (y-point (start-segment horizontal-segment))
-        y-point-end (y-point (end-segment horizontal-segment))]
-    (assert (= y-point-start y-point-end) "a horizontal segment should have the same y for both points")))
-
-(defn validate-vertical-segment [vertical-segment]
-  (let [x-point-start (x-point (start-segment vertical-segment))
-        x-point-end (x-point (end-segment vertical-segment))]
-    (assert (= x-point-start x-point-end) "a vertical segment should have the same x for both points")))
-
-(validate-horizontal-segment (make-segment (make-point 3 3) (make-point 12 3)))
-; => nil
-
-;(validate-horizontal-segment (make-segment (make-point 3 3) (make-point 12 5)))
-; Execution error (AssertionError)
-
-(validate-vertical-segment (make-segment (make-point 3 3) (make-point 3 12)))
-; => nil
-
-;(validate-vertical-segment (make-segment (make-point 3 3) (make-point 5 12)))
-; Execution error (AssertionError)
-
-(defn validate-segments [horizontal-segment vertical-segment]
-  (validate-horizontal-segment horizontal-segment)
-  (validate-vertical-segment vertical-segment))
-
 (defn make-rectangle [horizontal-segment vertical-segment]
-  (validate-segments horizontal-segment vertical-segment)
   (cons horizontal-segment (cons vertical-segment '())))
 
 (defn horizontal-rectangle-segment [rectangle]
@@ -94,11 +66,11 @@
 
 (def r (make-rectangle h v))
 
-(rectangle-perimeter r)
+(println (rectangle-perimeter r))
 ; a = 12, b=2 then p = 14
 ; => 14.000000105330983
 
-(rectangle-area r)
+(println (rectangle-area r))
 ; a = 12, b=2 then a = 24
 ; => 24.000001139884912
 
@@ -123,10 +95,10 @@
 
 (def r (make-rectangle-with-points hs he vs ve))
 
-(rectangle-perimeter r)
+(println (rectangle-perimeter r))
 ; a = 12, b=2 then p = 14
 ; => 14.000000105330983
 
-(rectangle-area r)
+(println (rectangle-area r))
 ; a = 12, b=2 then a = 24
 ; => 24.000001139884912
