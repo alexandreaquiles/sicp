@@ -105,3 +105,34 @@
     (/ (first (rest x)) g)))
 
 (print-rat (add-rat one-third one-third))
+
+(defn cons [x y]
+  (defn dispatch [m]
+    (cond (= m 0) x
+          (= m 1) y
+          :else (throw (IllegalArgumentException. (str "Argument not 0 or 1 -- CONS " m))))))
+;WARNING: cons already refers to: #'clojure.core/cons in namespace: exercises.chapter2.text, being replaced by: #'exercises.chapter2.text/cons
+
+(defn car [z] (z 0))
+
+(defn cdr [z] (z 1))
+
+(car (cons 1 2))
+; => 1
+
+(cdr (cons 1 2))
+;=> 2
+
+(car (cons 1 (cons 2 3)))
+;=> 1
+
+(cdr (cons 1 (cons 2 3)))
+;=> #'exercises.chapter2.text/dispatch
+
+(car (cdr (cons 1 (cons 2 3))))
+; => 1
+; ERRRROR!
+
+;((cons 1 2) 999)
+;Syntax error (IllegalArgumentException)
+;Argument not 0 or 1 -- CONS 999
