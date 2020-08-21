@@ -110,7 +110,8 @@
   (defn dispatch [m]
     (cond (= m 0) x
           (= m 1) y
-          :else (throw (IllegalArgumentException. (str "Argument not 0 or 1 -- CONS " m))))))
+          :else (throw (IllegalArgumentException. (str "Argument not 0 or 1 -- CONS " m)))))
+  dispatch)
 ;WARNING: cons already refers to: #'clojure.core/cons in namespace: exercises.chapter2.text, being replaced by: #'exercises.chapter2.text/cons
 
 (defn car [z] (z 0))
@@ -130,8 +131,7 @@
 ;=> #'exercises.chapter2.text/dispatch
 
 (car (cdr (cons 1 (cons 2 3))))
-; => 1
-; ERRRROR!
+; => 2
 
 ;((cons 1 2) 999)
 ;Syntax error (IllegalArgumentException)
