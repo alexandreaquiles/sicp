@@ -25,3 +25,11 @@
       guess
       (recur (improve guess))))
   (sqrt-iter 1.0))
+
+(defn expt [b n]
+  (loop [b b counter n product 1]
+    (if (= counter 0)
+      product
+      (recur b (- counter 1) (* b product)))))
+
+(assert (= '(2 4 8 16 32) (map #(expt 2 %) (range 1 6))))
