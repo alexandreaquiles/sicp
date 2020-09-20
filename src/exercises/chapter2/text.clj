@@ -106,33 +106,126 @@
 
 (print-rat (add-rat one-third one-third))
 
-(defn cons [x y]
+(defn fn-cons [x y]
   (defn dispatch [m]
     (cond (= m 0) x
           (= m 1) y
           :else (throw (IllegalArgumentException. (str "Argument not 0 or 1 -- CONS " m)))))
   dispatch)
-;WARNING: cons already refers to: #'clojure.core/cons in namespace: exercises.chapter2.text, being replaced by: #'exercises.chapter2.text/cons
 
-(defn car [z] (z 0))
+(defn fn-car [z] (z 0))
 
-(defn cdr [z] (z 1))
+(defn fn-cdr [z] (z 1))
 
-(car (cons 1 2))
+(fn-car (fn-cons 1 2))
 ; => 1
 
-(cdr (cons 1 2))
+(fn-cdr (fn-cons 1 2))
 ;=> 2
 
-(car (cons 1 (cons 2 3)))
+(fn-car (fn-cons 1 (fn-cons 2 3)))
 ;=> 1
 
-(cdr (cons 1 (cons 2 3)))
+(fn-cdr (fn-cons 1 (fn-cons 2 3)))
 ;=> #'exercises.chapter2.text/dispatch
 
-(car (cdr (cons 1 (cons 2 3))))
+(fn-car (fn-cdr (fn-cons 1 (fn-cons 2 3))))
 ; => 2
 
 ;((cons 1 2) 999)
 ;Syntax error (IllegalArgumentException)
 ;Argument not 0 or 1 -- CONS 999
+
+(cons 1
+      (cons 2
+            (cons 3
+                  (cons 4 nil))))
+; => (1 2 3 4)
+
+(def one-through-four (list 1 2 3 4))
+
+one-through-four
+; => (1 2 3 4)
+
+(first one-through-four)
+; => 1
+
+(rest one-through-four)
+; => (2 3 4)
+
+(first (rest one-through-four))
+; => 2
+
+(cons 10 one-through-four)
+; => (10 1 2 3 4)
+
+(cons 5 one-through-four)
+; => (5 1 2 3 4)
+
+(defn list-ref [items n]
+  (if (= n 0)
+    (first items)
+    (recur (rest items) (- n 1))))
+
+(def squares (list 1 4 9 16 25))
+
+(list-ref squares 3)
+; => 16
+
+(nil? 1)
+; => false
+
+(nil? nil)
+; => true
+
+(nil? '())
+; => false
+
+(empty? '())
+; => true
+
+(empty? nil)
+; => true
+
+(rest (list 1))
+; => ()
+
+(next (list 1))
+; => nil
+
+(defn length [items]
+  (if (empty? items)
+    0
+    (inc (length (rest items)))))
+
+(def odds (list 1 3 5 7))
+
+(length odds)
+; => 4
+
+(defn length [items]
+  (loop [items items count 0]
+    (if (empty? items)
+      count
+      (recur (next items) (inc count)))))
+
+(length odds)
+; => 4
+
+(length '())
+; => 0
+
+(length '(1))
+; => 1
+
+(defn append [list1 list2]
+  (if (empty? list1)
+    list2
+    (cons (first list1)
+          (append (rest list1) list2))))
+
+(append squares odds)
+; => (1 4 9 16 25 1 3 5 7)
+
+(append odds squares)
+; => (1 3 5 7 1 4 9 16 25)
