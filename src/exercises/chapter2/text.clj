@@ -230,9 +230,26 @@ one-through-four
 (append odds squares)
 ; => (1 3 5 7 1 4 9 16 25)
 
-; TODO: iterative append the code below doesn't work
-;(defn append-iter [list1 list2]
-;  (if (empty? list1)
-;    list2
-;    (recur (rest list1) (cons (first list1) list2) )))
-;(append-iter squares odds)
+(defn append-iter [list1 list2]
+  (if (empty? list1)
+    list2
+    (recur (rest list1) (cons (first list1) list2) )))
+
+(append-iter squares odds)
+; => (25 16 9 4 1 1 3 5 7)
+; INCORRET! The first list is inverted.
+; cons adds to the head
+
+(defn append-iter-with-conj [list1 list2]
+  (if (empty? list2)
+    list1
+    (recur (conj list1 (first list2)) (rest list2) )))
+
+(def squares-vector [1 4 9 16 25])
+(def odds-vector [1 3 5 7])
+
+(append-iter-with-conj squares-vector odds-vector)
+; => [1 4 9 16 25 1 3 5 7]
+
+(append-iter-with-conj odds-vector squares-vector)
+; => [1 3 5 7 1 4 9 16 25]
