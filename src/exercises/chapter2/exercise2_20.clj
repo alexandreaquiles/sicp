@@ -56,10 +56,31 @@
              (has-same-parity? (first items)) (recur (rest items) (cons (first items) result))
              :else (recur (rest items) result)))))
 
-; TODO: remove 'reverse' from stopping condition
-
 (same-parity 1 2 3 4 5 6 7)
 ; => (1 3 5 7)
 
 (same-parity 2 3 4 5 6 7)
+; => (2 4 6)
+
+(defn same-parity-with-concat [e & items]
+  (let [has-same-parity? (if (odd? e) odd? even?)]
+    (loop [items items result (list e)]
+      (cond (empty? items) result
+            (has-same-parity? (first items)) (recur (rest items) (concat result (list (first items))))
+            :else (recur (rest items) result)))))
+
+(same-parity-with-concat 1 2 3 4 5 6 7)
+; => (1 3 5 7)
+
+(same-parity-with-concat 2 3 4 5 6 7)
+; => (2 4 6)
+
+(defn same-parity-with-filter [e & items]
+  (let [has-same-parity? (if (odd? e) odd? even?)]
+    (cons e (filter has-same-parity? items))))
+
+(same-parity-with-filter 1 2 3 4 5 6 7)
+; => (1 3 5 7)
+
+(same-parity-with-filter 2 3 4 5 6 7)
 ; => (2 4 6)
