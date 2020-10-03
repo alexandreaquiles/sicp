@@ -284,3 +284,33 @@ one-through-four
 
 (scale-list (list 1 2 3 4 5) 10)
 ; => (10 20 30 40 50)
+
+(cons (list 1 2) (list 3 4))
+; => ((1 2) 3 4)
+
+(def x (cons (list 1 2) (list 3 4)))
+(length x)
+; => 3
+
+(defn count-leaves [x]
+  (cond (not (seq? x)) 1
+        (empty? x) 0
+        :else (+ (count-leaves (first x))
+                 (count-leaves (rest x)))))
+
+; if I put (empty?) before (not (seq? )) I get
+;     IllegalArgumentException
+;     Don't know how to create ISeq from: java.lang.Long
+; empty? calls (not (seq coll)), so it expects a sequence
+
+(count-leaves x)
+; => 4
+
+(list x x)
+; => (((1 2) 3 4) ((1 2) 3 4))
+
+(length (list x x))
+; => 2
+
+(count-leaves (list x x))
+; => 8
