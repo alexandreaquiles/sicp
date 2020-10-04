@@ -333,3 +333,151 @@ one-through-four
 
 (scale-tree (list 1 (list 2 (list 3 4) 5) (list 6 7)) 10)
 ; => (10 (20 (30 40) 50) (60 70))
+
+(defn square [x] (* x x))
+
+(defn sum-odd-squares [tree]
+  (cond (not (seq? tree)) (if (odd? tree) (square tree) 0)
+        (empty? tree) 0
+        :else (+ (sum-odd-squares (first tree))
+                 (sum-odd-squares (rest tree)))))
+
+(sum-odd-squares (list 1 2 3 4 5 6))
+; => 35
+
+(defn fib [n]
+  (defn fib-iter [a b count]
+    (if (= count 0)
+      b
+      (recur (+ a b) a (- count 1))))
+  (fib-iter 1 0 n))
+
+(defn even-fibs [n]
+  (defn next [k]
+    (if (> k n)
+      nil
+      (let [f (fib k)]
+        (if (even? f)
+          (cons f (next (+ k 1)))
+          (next (+ k 1))))))
+  (next 0))
+
+(map fib (range 11))
+; => (0 1 1 2 3 5 8 13 21 34 55)
+
+(even-fibs 10)
+; => (0 2 8 34)
+
+(map square (list 1 2 3 4 5))
+; => (1 4 9 16 25)
+
+(defn filter [predicate sequence]
+  (cond (empty? sequence) nil
+        (predicate (first sequence)) (cons (first sequence) (filter predicate (rest sequence)))
+        :else (filter predicate (rest sequence))))
+
+(filter odd? (list 1 2 3 4 5))
+; => (1 3 5)
+
+(defn accumulate [op initial sequence]
+        (if (empty? sequence)
+          initial
+          (op (first sequence)
+              (accumulate op initial (rest sequence)))))
+
+(accumulate + 0 (list 1 2 3 4 5))
+; => 15
+
+(accumulate * 1 (list 1 2 3 4 5))
+; => 120
+
+(accumulate cons nil (list 1 2 3 4 5))
+; => (1 2 3 4 5)
+
+(defn enumerate-interval [low high]
+  (if (> low high)
+    nil
+    (cons low (enumerate-interval (inc low) high))))
+
+(enumerate-interval 2 7)
+; => (2 3 4 5 6 7)
+
+(defn enumerate-tree [tree]
+  (cond (not (seq? tree)) (list tree)
+        (empty? tree) nil
+        :else (append (enumerate-tree (first tree))
+                      (enumerate-tree (rest tree)))))
+
+(enumerate-tree (list 1 (list 2 (list 3 4)) 5))
+; => (1 2 3 4 5)
+
+(defn sum-odd-squares [tree]
+  (accumulate
+    + 0 (map square (filter odd? (enumerate-tree tree)))))
+
+(sum-odd-squares (list 1 2 3 4 5 6))
+; => 35
+
+(enumerate-tree (list 1 (list 2 (list 3 4)) 5))
+; => (1 2 3 4 5)
+
+(filter odd? (list 1 2 3 4 5 6))
+; => (1 3 5)
+
+(map square (list 1 3 5))
+; => (1 9 25)
+
+(accumulate + 0 (list 1 9 25))
+; => 35
+
+(defn even-fibs [n]
+  (accumulate
+    cons
+    nil
+    (filter even? (map fib (enumerate-interval 0 n)))))
+
+(even-fibs 10)
+; => (0 2 8 34)
+
+(enumerate-interval 0 10)
+; => (0 1 2 3 4 5 6 7 8 9 10)
+
+(map fib (list 0 1 2 3 4 5 6 7 8 9 10))
+; => (0 1 1 2 3 5 8 13 21 34 55)
+
+(filter even? (list 0 1 1 2 3 5 8 13 21 34 55))
+; => (0 2 8 34)
+
+(accumulate cons nil (list 0 2 8 34))
+; => (0 2 8 34)
+
+(defn list-fib-squares [n]
+  (accumulate
+    cons
+    nil
+    (map square (map fib (enumerate-interval 0 n)))))
+
+(list-fib-squares 10)
+; => (0 1 1 4 9 25 64 169 441 1156 3025)
+
+(defn product-of-squares-of-odd-elements [sequence]
+  (accumulate * 1 (map square (filter odd? sequence))))
+
+(product-of-squares-of-odd-elements (list 1 2 3 4 5))
+; => 225
+
+(def records (list {:profession :programmer :salary 10000}
+                   {:profession :programmer :salary 5000}
+                   {:profession :cto :salary 50000}))
+
+(defn programmer? [record]
+  (= (:profession record) :programmer))
+
+(defn salary [record]
+  (:salary record))
+
+(defn salary-of-highest-paid-programmer [records]
+  (accumulate max 0 (map salary (filter programmer? records))))
+
+(salary-of-highest-paid-programmer records)
+; => 10000
