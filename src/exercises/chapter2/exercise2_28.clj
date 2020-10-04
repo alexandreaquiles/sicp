@@ -1,5 +1,4 @@
-(ns exercises.chapter2.exercise2_28
-  (:use exercises.chapter2.text))
+(ns exercises.chapter2.exercise2_28)
 
 ; Exercise 2.28:
 ; Write a procedure fringe that takes as argument a tree (represented as a list)
@@ -19,7 +18,7 @@
 (defn fringe [items]
   (cond (not (seq? items)) (list items)
         (empty? items) nil
-        :else (append (fringe (first items)) (fringe (rest items)))))
+        :else (concat (fringe (first items)) (fringe (rest items)))))
 
 (fringe x1)
 ; => (1 2 3 4)
