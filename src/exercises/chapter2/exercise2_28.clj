@@ -18,9 +18,11 @@
 
 (defn fringe [items]
   (cond (not (seq? items)) (list items)
-        (empty? items) '()
+        (empty? items) nil
         :else (append (fringe (first items)) (fringe (rest items)))))
 
 (fringe x1)
+; => (1 2 3 4)
 
 (fringe (list x1 x1))
+; => (1 2 3 4 1 2 3 4)
