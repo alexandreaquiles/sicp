@@ -33,3 +33,17 @@
       (recur b (- counter 1) (* b product)))))
 
 (assert (= '(2 4 8 16 32) (map #(expt 2 %) (range 1 6))))
+
+(defn divides? [a b] (= (rem b a) 0))
+
+(defn find-divisor [n test-divisor]
+  (cond (> (square test-divisor) n) n
+        (divides? test-divisor n) test-divisor
+        :else (find-divisor n (+ test-divisor 1))))
+(defn smallest-divisor [n]
+  (find-divisor n 2))
+
+(defn prime? [n]
+  (= n (smallest-divisor n)))
+
+(assert (= '(1 2 3 5 7 11 13 17 19) (filter prime? (range 1 20))))

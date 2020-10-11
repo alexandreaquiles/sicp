@@ -1,4 +1,5 @@
-(ns exercises.chapter2.text)
+(ns exercises.chapter2.text
+  (:use exercises.math))
 
 (defn linear-combination [a b x y]
   (+ (* a x) (* b y)))
@@ -80,11 +81,6 @@
 (print-rat (add-rat one-third one-third))
 ; 6/9
 ; => nil
-
-(defn gcd [a b]
-  (if (= b 0)
-    a
-    (recur b (rem a b))))
 
 (defn make-rat [n d]
   (let [g (gcd n d)]
@@ -270,8 +266,6 @@ one-through-four
     (cons (proc (first items))
           (map proc (rest items)))))
 
-(defn abs [n] (max n (- n)))
-
 (map abs (list -10 2.5 -11.6 17))
 ; => (10 2.5 11.6 17)
 
@@ -333,8 +327,6 @@ one-through-four
 
 (scale-tree (list 1 (list 2 (list 3 4) 5) (list 6 7)) 10)
 ; => (10 (20 (30 40) 50) (60 70))
-
-(defn square [x] (* x x))
 
 (defn sum-odd-squares [tree]
   (cond (not (seq? tree)) (if (odd? tree) (square tree) 0)
@@ -481,3 +473,95 @@ one-through-four
 
 (salary-of-highest-paid-programmer records)
 ; => 10000
+
+; all ordered pairs of distinct positive integers i and j,
+;   where 1 ≤ j < i ≤ n
+(defn ordered-pairs [n]
+  (accumulate
+    append nil (map (fn [i]
+                      (map (fn [j] (list i j))
+                           (enumerate-interval 1 (- i 1))))
+                    (enumerate-interval 1 n))))
+
+(ordered-pairs 6)
+; => ((2 1) (3 1) (3 2) (4 1) (4 2) (4 3) (5 1) (5 2) (5 3) (5 4) (6 1) (6 2) (6 3) (6 4) (6 5))
+
+(defn flatmap [proc seq]
+  (accumulate append nil (map proc seq)))
+
+(defn prime-sum? [pair]
+  (prime? (+ (first pair) (first (rest pair)))))
+
+(defn make-pair-sum [pair]
+  (list (first pair) (first (rest pair)) (+ (first pair) (first (rest pair)))))
+
+(defn prime-sum-pairs [n]
+  (map make-pair-sum
+       (filter prime-sum? (flatmap
+                            (fn [i]
+                              (map (fn [j] (list i j))
+                                   (enumerate-interval 1 (- i 1))))
+                            (enumerate-interval 1 n)))))
+
+(prime-sum-pairs 6)
+; => ((2 1 3) (3 2 5) (4 1 5) (4 3 7) (5 2 7) (6 1 7) (6 5 11))
+
+(defn remove [item sequence]
+  (filter (fn [x] (not (= x item)))
+          sequence))
+
+(defn permutations [s]
+  (if (empty? s)
+    (list nil)
+    (flatmap (fn [x]
+               (map (fn [p] (cons x p))
+                    (permutations (remove x s))))
+             s)))
+
+(remove 1 '(1 2 3))
+; => (2 3)
+
+(permutations '(2 3))
+; => ((2 3) (3 2))
+
+(remove 2 '(1 2 3))
+; => (1 3)
+
+(permutations '(1 3))
+; => ((1 3) (3 1))
+
+(remove 3 '(1 2 3))
+; => (1 2)
+
+(permutations '(1 2))
+; => ((1 2) (2 1))
+
+(permutations '(1 2 3))
+; => ((1 2 3) (1 3 2) (2 1 3) (2 3 1) (3 1 2) (3 2 1))
+
+(permutations '(1 2 3 4))
+; =>
+; ((1 2 3 4)
+;  (1 2 4 3)
+;  (1 3 2 4)
+;  (1 3 4 2)
+;  (1 4 2 3)
+;  (1 4 3 2)
+;  (2 1 3 4)
+;  (2 1 4 3)
+;  (2 3 1 4)
+;  (2 3 4 1)
+;  (2 4 1 3)
+;  (2 4 3 1)
+;  (3 1 2 4)
+;  (3 1 4 2)
+;  (3 2 1 4)
+;  (3 2 4 1)
+;  (3 4 1 2)
+;  (3 4 2 1)
+;  (4 1 2 3)
+;  (4 1 3 2)
+;  (4 2 1 3)
+;  (4 2 3 1)
+;  (4 3 1 2)
+;  (4 3 2 1))
