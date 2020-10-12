@@ -11,13 +11,9 @@
 
 (def accumulate reduce)
 
-(defn enumerate-interval [low high]
-  (if (> low high)
-    nil
-    (cons low (enumerate-interval (inc low) high))))
+(def flatmap mapcat)
 
-(defn flatmap [proc seq]
-  (accumulate append nil (map proc seq)))
+(defn enumerate-interval [low high] (range low (inc high)))
 
 (defn unique-pairs [n]
   (flatmap
