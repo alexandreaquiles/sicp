@@ -565,3 +565,35 @@ one-through-four
 ;  (4 2 3 1)
 ;  (4 3 1 2)
 ;  (4 3 2 1))
+
+(def a 1)
+(def b 2)
+
+(list a b)
+; => (1 2)
+
+(list 'a 'b)
+; => (a b)
+
+(list 'a b)
+; => (a 2)
+
+(first '(a b c))
+; => a
+
+(rest '(a b c))
+; => (b c)
+
+(= 'a 'a)
+; => true
+
+(defn memq [item x]
+  (cond (empty? x) false
+        (= item (first x)) x
+        :else (memq item (rest x))))
+
+(memq 'apple '(pear banana prune))
+; => false
+
+(memq 'apple '(x (apple sauce) y apple pear))
+; => (apple pear)
