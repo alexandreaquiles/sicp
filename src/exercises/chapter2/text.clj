@@ -229,7 +229,7 @@ one-through-four
 (defn append-iter [list1 list2]
   (if (empty? list1)
     list2
-    (recur (rest list1) (cons (first list1) list2) )))
+    (recur (rest list1) (cons (first list1) list2))))
 
 (append-iter squares odds)
 ; => (25 16 9 4 1 1 3 5 7)
@@ -239,7 +239,7 @@ one-through-four
 (defn append-iter-with-conj [list1 list2]
   (if (empty? list2)
     list1
-    (recur (conj list1 (first list2)) (rest list2) )))
+    (recur (conj list1 (first list2)) (rest list2))))
 
 (def squares-vector [1 4 9 16 25])
 (def odds-vector [1 3 5 7])
@@ -310,10 +310,10 @@ one-through-four
 ; => 8
 
 (defn scale-tree [tree factor]
-        (cond (not (seq? tree)) (* tree factor)
-              (empty? tree) nil
-              :else (cons (scale-tree (first tree) factor)
-                          (scale-tree (rest tree) factor))))
+  (cond (not (seq? tree)) (* tree factor)
+        (empty? tree) nil
+        :else (cons (scale-tree (first tree) factor)
+                    (scale-tree (rest tree) factor))))
 
 (scale-tree (list 1 (list 2 (list 3 4) 5) (list 6 7)) 10)
 ; => (10 (20 (30 40) 50) (60 70))
@@ -372,10 +372,10 @@ one-through-four
 ; => (1 3 5)
 
 (defn accumulate [op initial sequence]
-        (if (empty? sequence)
-          initial
-          (op (first sequence)
-              (accumulate op initial (rest sequence)))))
+  (if (empty? sequence)
+    initial
+    (op (first sequence)
+        (accumulate op initial (rest sequence)))))
 
 (accumulate + 0 (list 1 2 3 4 5))
 ; => 15
@@ -597,3 +597,70 @@ one-through-four
 
 (memq 'apple '(x (apple sauce) y apple pear))
 ; => (apple pear)
+
+(defn variable? [x] (symbol? x))
+
+(defn same-variable? [v1 v2]
+  (and (variable? v1) (variable? v2) (= v1 v2)))
+
+(defn make-sum [a1 a2] (list '+ a1 a2))
+(defn make-product [m1 m2] (list '* m1 m2))
+
+(defn sum? [x] (and (seq? x) (= (first x) '+)))
+
+(defn addend [s] (first (rest s)))
+
+(defn augend [s] (first (rest (rest s))))
+
+(defn product? [x] (and (seq? x) (= (first x) '*)))
+
+(defn multiplier [p] (first (rest p)))
+
+(defn multiplicand [p] (first (rest (rest p))))
+
+(defn deriv [exp var]
+  (cond (number? exp) 0
+        (variable? exp) (if (same-variable? exp var) 1 0)
+        (sum? exp) (make-sum (deriv (addend exp) var)
+                             (deriv (augend exp) var))
+        (product? exp) (make-sum
+                         (make-product (multiplier exp)
+                                       (deriv (multiplicand exp) var))
+                         (make-product (deriv (multiplier exp) var)
+                                       (multiplicand exp)))
+        :else (throw (IllegalArgumentException. (str "unknown expression type: DERIV" exp)))))
+
+(deriv '(+ x 3) 'x)
+; (+ 1 0)
+
+(deriv '(* x y) 'x)
+; (+ (* x 0) (* 1 y))
+
+(deriv '(* (* x y) (+ x 3)) 'x)
+; (+ (* (* x y) (+ 1 0))
+; (* (+ (* x 0) (* 1 y))
+;   (+ x 3)) )
+
+(defn =number? [exp num] (and (number? exp) (= exp num)))
+
+(defn make-sum [a1 a2]
+  (cond (=number? a1 0) a2
+        (=number? a2 0) a1
+        (and (number? a1) (number? a2)) (+ a1 a2)
+        :else (list '+ a1 a2)))
+
+(defn make-product [m1 m2]
+  (cond (or (=number? m1 0) (=number? m2 0)) 0
+        (=number? m1 1) m2
+        (=number? m2 1) m1
+        (and (number? m1) (number? m2)) (* m1 m2)
+        :else (list '* m1 m2)))
+
+(deriv '(+ x 3) 'x)
+; 1
+
+(deriv '(* x y) 'x)
+; y
+
+(deriv '(* (* x y) (+ x 3)) 'x)
+; => (+ (* x y) (* y (+ x 3)))
