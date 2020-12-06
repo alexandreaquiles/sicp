@@ -600,23 +600,72 @@ one-through-four
 
 (defn variable? [x] (symbol? x))
 
+(variable? 'x)
+; => true
+
+(variable? 1)
+; => false
+
 (defn same-variable? [v1 v2]
   (and (variable? v1) (variable? v2) (= v1 v2)))
 
+(same-variable? 'x 'x)
+; => true
+
+(same-variable? 'x 'y)
+; => false
+
 (defn make-sum [a1 a2] (list '+ a1 a2))
+
+(make-sum 'x 'y)
+; => (+ x y)
+
 (defn make-product [m1 m2] (list '* m1 m2))
+
+(make-product 'x 'y)
+; => (* x y)
 
 (defn sum? [x] (and (seq? x) (= (first x) '+)))
 
+(sum? '(+ x y))
+; => true
+
+(sum? '(* x y))
+; => false
+
+(sum? 1)
+; => false
+
 (defn addend [s] (first (rest s)))
+
+(addend '(+ x y))
+; => x
 
 (defn augend [s] (first (rest (rest s))))
 
+(augend '(+ x y))
+; => y
+
 (defn product? [x] (and (seq? x) (= (first x) '*)))
+
+(product? '(* x y))
+; => true
+
+(product? '(+ x y))
+; => true
+
+(product? 1)
+; => false
 
 (defn multiplier [p] (first (rest p)))
 
+(multiplier '(* x y))
+; => x
+
 (defn multiplicand [p] (first (rest (rest p))))
+
+(multiplicand '(* x y))
+; => y
 
 (defn deriv [exp var]
   (cond (number? exp) 0
@@ -643,6 +692,15 @@ one-through-four
 
 (defn =number? [exp num] (and (number? exp) (= exp num)))
 
+(=number? '0 0)
+; => true
+
+(=number? '0 1)
+; => false
+
+(=number? 'x 0)
+; => false
+
 (defn make-sum [a1 a2]
   (cond (=number? a1 0) a2
         (=number? a2 0) a1
@@ -655,6 +713,9 @@ one-through-four
         (=number? m2 1) m1
         (and (number? m1) (number? m2)) (* m1 m2)
         :else (list '* m1 m2)))
+
+(make-sum (make-product 'x 0) (make-product 1 'y))
+; => y
 
 (deriv '(+ x 3) 'x)
 ; 1
