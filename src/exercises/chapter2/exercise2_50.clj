@@ -62,8 +62,8 @@
                      (make-vect 0.0 0.0)
                      (make-vect 1.0 1.0)))
 
-(draw george a-whole-window-frame)
-(draw (flip-horizontally george) a-whole-window-frame)
+;(draw george a-whole-window-frame)
+;(draw (flip-horizontally george) a-whole-window-frame)
 
 (defn rotates-180 [painter]
   (transform-painter painter
@@ -71,20 +71,21 @@
                      (make-vect 0.0 1.0)
                      (make-vect 1.0 0.0)))
 
-(draw (rotates-90 george) a-whole-window-frame)
-(draw (rotates-180 george) a-whole-window-frame)
+;(draw (rotates-90 george) a-whole-window-frame)
+;(draw (rotates-180 george) a-whole-window-frame)
 
 (defn rotates-180 [painter]
   (rotates-90 (rotates-90 painter)))
 
-(draw (rotates-180 george) a-whole-window-frame)
+;(draw (rotates-180 george) a-whole-window-frame)
 
 (defn rotates-270 [painter]
   (rotates-90 (rotates-90 (rotates-90 painter))))
 
-(draw (rotates-270 george) a-whole-window-frame)
+;(draw (rotates-270 george) a-whole-window-frame)
 
 (defn rotates-270 [painter]
   (rotates-90 (rotates-180 painter)))
 
-(draw (rotates-270 george) a-whole-window-frame)
+;(draw (rotates-270 george) a-whole-window-frame)
+;(draw (rotates-270 george) a-whole-window-frame)

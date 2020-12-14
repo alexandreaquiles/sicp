@@ -30,10 +30,10 @@
       (paint-bottom frame)
       (paint-top frame))))
 
-(draw (belows opposite-corners george) a-whole-window-frame)
+;(draw (belows opposite-corners george) a-whole-window-frame)
 
 (defn belows [painter1 painter2]
   (rotates-90 (besides (rotates-270 painter1)
                        (rotates-270 painter2))))
 
-(draw (belows opposite-corners george) a-whole-window-frame)
+;(draw (belows opposite-corners george) a-whole-window-frame)

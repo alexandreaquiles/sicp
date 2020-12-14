@@ -12,4 +12,4 @@
     (let [smaller (up-split p (dec n))]
       (below p (beside smaller smaller)))))
 
-(draw (up-split wave 4))
+;(draw (up-split wave 4))

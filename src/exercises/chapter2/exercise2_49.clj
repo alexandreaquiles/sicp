@@ -62,18 +62,18 @@
                            (make-segment top-right bottom-right)
                            (make-segment bottom-right bottom-left))))
 
-(draw outline a-whole-window-frame)
-(draw outline a-small-frame)
-(draw outline a-twisted-frame)
+;(draw outline a-whole-window-frame)
+;(draw outline a-small-frame)
+;(draw outline a-twisted-frame)
 
 ; b
 (def opposite-corners
   (segments->painter (list (make-segment bottom-left top-right)
                            (make-segment top-left bottom-right))))
 
-(draw opposite-corners a-whole-window-frame)
-(draw opposite-corners a-small-frame)
-(draw opposite-corners a-twisted-frame)
+;(draw opposite-corners a-whole-window-frame)
+;(draw opposite-corners a-small-frame)
+;(draw opposite-corners a-twisted-frame)
 
 ; c
 (def diamond-shape
@@ -82,9 +82,9 @@
                            (make-segment middle-right middle-bottom)
                            (make-segment middle-bottom middle-left))))
 
-(draw diamond-shape a-whole-window-frame)
-(draw diamond-shape a-small-frame)
-(draw diamond-shape a-twisted-frame)
+;(draw diamond-shape a-whole-window-frame)
+;(draw diamond-shape a-small-frame)
+;(draw diamond-shape a-twisted-frame)
 
 ;d
 (def george
@@ -106,13 +106,13 @@
                             (make-segment (make-vect 0.60 0.00) (make-vect 0.50 0.30))
                             (make-segment (make-vect 0.50 0.30) (make-vect 0.40 0.00)))))
 
-(draw george a-whole-window-frame)
-(draw george a-small-frame)
-(draw george a-twisted-frame)
+;(draw george a-whole-window-frame)
+;(draw george a-small-frame)
+;(draw george a-twisted-frame)
 
 (def diagonal
   (segments->painter (list (make-segment bottom-left top-right))))
 
-(draw diagonal a-whole-window-frame)
-(draw diagonal a-small-frame)
-(draw diagonal a-twisted-frame)
+;(draw diagonal a-whole-window-frame)
+;(draw diagonal a-small-frame)
+;(draw diagonal a-twisted-frame)

@@ -23,10 +23,10 @@
 
 (def up-split (split below beside))
 
-(draw (right-split wave 4))
+;(draw (right-split wave 4))
 
-(draw ((split beside below) wave 4))
+;(draw ((split beside below) wave 4))
 
-(draw (up-split wave 4))
+;(draw (up-split wave 4))
 
-(draw ((split below beside) wave 4))
+;(draw ((split below beside) wave 4))
