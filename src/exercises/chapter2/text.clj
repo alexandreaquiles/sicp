@@ -1,5 +1,6 @@
 (ns exercises.chapter2.text
-  (:use exercises.math))
+  (:use exercises.math)
+  (:use exercises.picture))
 
 (defn linear-combination [a b x y]
   (+ (* a x) (* b y)))
@@ -509,6 +510,232 @@ one-through-four
 (defn remove [item sequence]
   (filter (fn [x] (not (= x item)))
           sequence))
+
+;(draw wave)
+;(draw wave frame1)
+;(draw wave frame2)
+
+(def wave2 (beside wave (flip-vert wave)))
+;(draw wave2)
+
+(def wave4 (below wave2 wave2))
+;(draw wave4)
+
+;; same as wave4
+(defn flipped-pairs [painter]
+  (let [painter2 (beside painter (flip-vert painter))]
+    (below painter2 painter2)))
+;(draw (flipped-pairs wave))
+
+(def wave4 (flipped-pairs wave))
+;(draw wave4)
+
+(defn right-split [p n]
+  (if (= n 0)
+    p
+    (let [smaller (right-split p (dec n))]
+      (beside p (below smaller smaller)))))
+
+;(draw (right-split wave 4))
+
+(defn up-split [p n]
+  (if (= n 0)
+    p
+    (let [smaller (up-split p (dec n))]
+      (below p (beside smaller smaller)))))
+
+;(draw (up-split wave 4))
+
+(defn corner-split [p n]
+  (if (= n 0)
+    p
+    (let [up (up-split p (dec n))
+          right (right-split p (dec n))
+          top-left (beside up up)
+          bottom-right (below right right)
+          top-right (corner-split p (dec n))]
+      (beside (below p top-left)
+              (below bottom-right top-right)))))
+
+;(draw (corner-split wave 4))
+
+(defn square-limit [p n]
+  (let [quarter (corner-split p n)
+        half (beside (flip-horiz quarter) quarter)]
+    (below (flip-vert half) half)))
+
+;(draw (square-limit wave 4))
+
+(defn square-of-four [tl tr bl br]
+  (fn [p]
+    (let [top (beside (tl p) (tr p))
+          bottom (beside (bl p) (br p))]
+      (below bottom top))))
+
+(defn flipped-pairs [painter]
+  (let [combine4 (square-of-four identity flip-vert
+                                 identity flip-vert)]
+    (combine4 painter)))
+
+;(draw (flipped-pairs wave))
+
+(defn flipped-pairs [painter]
+  ((square-of-four identity flip-vert identity flip-vert) painter))
+
+;(draw (flipped-pairs wave))
+
+(def flipped-pairs (square-of-four identity flip-vert identity flip-vert))
+
+;(draw (flipped-pairs wave))
+
+(defn square-limit [painter n]
+  (let [quarter (corner-split painter n)]
+    ((square-of-four flip-horiz
+                     identity
+                     (fn [p] (flip-vert (flip-horiz p)))
+                     flip-vert) quarter)))
+
+;(draw (square-limit wave 4))
+
+(defn square-limit [painter n]
+  (let [combine4 (square-of-four flip-horiz identity
+                                 rotate180 flip-vert)]
+    (combine4 (corner-split painter n))))
+
+;(draw (square-limit wave 4))
+
+(defn square-limit [painter n]
+  (let [combine4 (square-of-four flip-horiz identity (comp flip-vert flip-horiz) flip-vert)]
+    (combine4 (corner-split painter n))))
+
+;(draw (square-limit wave 4))
+
+(defn make-frame [origin edge1 edge2] (list origin edge1 edge2))
+(defn origin-frame [frame] (first frame))
+(defn edge1-frame [frame] (first (rest frame)))
+(defn edge2-frame [frame] (first (rest (rest frame))))
+
+(defn make-vect [x y] (list x y))
+(def xcor-vect first)
+(def ycor-vect second)
+
+(defn add-vect [vect1 vect2]
+  (make-vect (+ (xcor-vect vect1) (xcor-vect vect2))
+             (+ (ycor-vect vect1) (ycor-vect vect2))))
+
+(defn sub-vect [vect1 vect2]
+  (make-vect (- (xcor-vect vect1) (xcor-vect vect2))
+             (- (ycor-vect vect1) (ycor-vect vect2))))
+
+(defn scale-vect [s vect]
+  (make-vect (* s (xcor-vect vect)) (* s (ycor-vect vect))))
+
+(defn frame-coordinates-map [frame]
+  (fn [v]
+    (add-vect
+      (origin-frame frame)
+      (add-vect (scale-vect (xcor-vect v) (edge1-frame frame))
+                (scale-vect (ycor-vect v) (edge2-frame frame))))))
+
+; from exercise 2.23
+(defn for-each [proc items]
+  (if (empty? items)
+    true
+    (do
+      (proc (first items))
+      (for-each proc (rest items)))))
+
+(defn draw-line-from-vectors [start-vector end-vector]
+  (let [x1 (xcor-vect start-vector)
+        y1 (ycor-vect start-vector)
+        x2 (xcor-vect end-vector)
+        y2 (ycor-vect end-vector)]
+    (draw-line [x1 y1] [x2 y2])))
+
+(defn make-segment [start end] (list start end))
+(defn start-segment [segment] (first segment))
+(defn end-segment [segment] (second segment))
+
+(defn segments->painter [segment-list]
+  (fn [frame]
+    (for-each (fn [segment] (draw-line-from-vectors
+                              ((frame-coordinates-map frame) (start-segment segment))
+                              ((frame-coordinates-map frame) (end-segment segment))))
+              segment-list)))
+
+(def a-whole-window-frame (make-frame (make-vect 0 0)
+                                      (make-vect width 0)
+                                      (make-vect 0 height)))
+
+(def tetrimino-z
+  (segments->painter (list (make-segment (make-vect 0.00 0.25) (make-vect 0.00 0.50))
+                           (make-segment (make-vect 0.00 0.50) (make-vect 0.25 0.50))
+                           (make-segment (make-vect 0.25 0.50) (make-vect 0.25 0.75))
+                           (make-segment (make-vect 0.25 0.75) (make-vect 0.50 0.75))
+                           (make-segment (make-vect 0.50 0.75) (make-vect 0.75 0.75))
+                           (make-segment (make-vect 0.75 0.75) (make-vect 0.75 0.50))
+                           (make-segment (make-vect 0.75 0.50) (make-vect 0.50 0.50))
+                           (make-segment (make-vect 0.50 0.50) (make-vect 0.50 0.25))
+                           (make-segment (make-vect 0.50 0.25) (make-vect 0.25 0.25))
+                           (make-segment (make-vect 0.25 0.25) (make-vect 0.00 0.25)))))
+
+;(draw tetrimino-z a-whole-window-frame)
+
+(defn transform-painter [painter origin corner1 corner2]
+  (fn [frame]
+    (let [m (frame-coordinates-map frame)
+          new-origin (m origin)]
+      (painter (make-frame new-origin
+                           (sub-vect (m corner1) new-origin)
+                           (sub-vect (m corner2) new-origin))))))
+
+(defn flip-vertically [painter]
+  (transform-painter painter
+                     (make-vect 0.0 1.0)
+                     (make-vect 1.0 1.0)
+                     (make-vect 0.0 0.0)))
+
+;(draw (flip-vertically tetrimino-z) a-whole-window-frame)
+
+(defn shrink-to-upper-right [painter]
+  (transform-painter painter
+                     (make-vect 0.5 0.5)
+                     (make-vect 1.0 0.5)
+                     (make-vect 0.5 1.0)))
+
+;(draw (shrink-to-upper-right tetrimino-z) a-whole-window-frame)
+
+(defn rotates-90 [painter]
+  (transform-painter painter
+                     (make-vect 1.0 0.0)
+                     (make-vect 1.0 1.0)
+                     (make-vect 0.0 0.0)))
+
+;(draw (rotates-90 tetrimino-z) a-whole-window-frame)
+
+(defn squash-inwards [painter]
+  (transform-painter painter
+                     (make-vect 0.0 0.0)
+                     (make-vect 0.65 0.35)
+                     (make-vect 0.35 0.65)))
+
+;(draw (squash-inwards tetrimino-z) a-whole-window-frame)
+
+(defn besides [painter1 painter2]
+  (let [split-point (make-vect 0.5 0.0)
+        paint-left (transform-painter painter1
+                                      (make-vect 0.0 0.0)
+                                      split-point
+                                      (make-vect 0.0 1.0))
+        paint-right (transform-painter painter2
+                                       split-point
+                                       (make-vect 1.0 0.0)
+                                       (make-vect 0.5 1.0))]
+    (fn [frame]
+      (paint-left frame)
+      (paint-right frame))))
+
+;(draw (besides tetrimino-z (rotates-90 tetrimino-z)) a-whole-window-frame)
 
 (defn permutations [s]
   (if (empty? s)
