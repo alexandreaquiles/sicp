@@ -7,10 +7,14 @@
         (= x (first set)) true
         :else (element-of-set? x (rest set))))
 
+(defn adjoin-set [x set]
+  (if (element-of-set? x set)
+    set
+    (cons x set)))
+
 (defn union-set [set1 set2]
   (cond (empty? set1) set2
-        (element-of-set? (first set1) set2) (union-set (rest set1) set2)
-        :else (cons (first set1) (union-set (rest set1) set2))))
+        :else (adjoin-set (first set1) (union-set (rest set1) set2))))
 
 (union-set '() '())
 ; => ()
