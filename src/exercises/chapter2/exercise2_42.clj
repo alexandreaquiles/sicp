@@ -59,39 +59,31 @@
 
 (def row first)
 
-(defn safe-horizontally? [positions]
-  (loop [new-row (row (first positions)) other-positions (rest positions)]
-    (cond (empty? other-positions) true
-          (= new-row (row (first other-positions))) false
-          :else (recur new-row (rest other-positions)))))
+(def horizontal-collision =)
 
-(assert (= (safe-horizontally? '((2 2) (1 1))) true))
-(assert (= (safe-horizontally? '((3 2) (1 1))) true))
-(assert (= (safe-horizontally? '((3 3) (3 2) (1 1))) false))
-(assert (= (safe-horizontally? '((4 3) (3 2) (1 1))) true))
-
-(defn safe-diagonally? [positions]
-  (loop [new-row (row (first positions))
-         number-of-rows 1
-         other-positions (rest positions)]
-    (cond (empty? other-positions) true
-          (= (- new-row number-of-rows) (row (first other-positions))) false
-          (= (+ new-row number-of-rows) (row (first other-positions))) false
-          :else (recur new-row (inc number-of-rows) (rest other-positions)))))
-
-(assert (= (safe-diagonally? '((1 2) (1 1))) true))
-(assert (= (safe-diagonally? '((2 2) (1 1))) false))
-(assert (= (safe-diagonally? '((1 2) (2 1))) false))
-(assert (= (safe-diagonally? '((2 2) (2 1))) true))
-
-(assert (= (safe-diagonally? '((3 3) (4 2) (1 1))) false))
-(assert (= (safe-diagonally? '((2 3) (4 2) (1 1))) true))
-(assert (= (safe-diagonally? '((2 3) (2 2) (4 1))) false))
-(assert (= (safe-diagonally? '((3 3) (1 2) (4 1))) true))
+(defn diagonal-collision [new-row rows-offset another-row]
+  (or (= (- new-row rows-offset) another-row)
+      (= (+ new-row rows-offset) another-row)))
 
 (defn safe? [_ positions]
-  (and (safe-horizontally? positions)
-       (safe-diagonally? positions)))
+  (loop [new-row (row (first positions))
+         rows-offset 1
+         other-positions (rest positions)]
+    (cond (empty? other-positions) true
+          (let [another-row (row (first other-positions))
+                horizontal-nok (horizontal-collision new-row another-row)
+                diagonal-nok (diagonal-collision new-row rows-offset another-row)]
+            (or horizontal-nok
+                diagonal-nok)) false
+          :else (recur new-row (inc rows-offset) (rest other-positions)))))
+
+(assert (= (safe? 2 '((2 2) (1 1))) false))
+(assert (= (safe? 2 '((3 2) (1 1))) true))
+(assert (= (safe? 3 '((3 3) (3 2) (1 1))) false))
+(assert (= (safe? 3 '((3 3) (2 2) (1 1))) false))
+(assert (= (safe? 3 '((2 3) (3 2) (1 1))) false))
+(assert (= (safe? 3 '((4 3) (3 2) (1 1))) false))
+(assert (= (safe? 3 '((2 3) (4 2) (1 1))) true))
 
 (defn adjoin-position [new-row k rest-of-queens]
   (cons (list new-row k) rest-of-queens))
@@ -112,8 +104,10 @@
   (queen-cols board-size))
 
 (queens 4)
-; => (((3 4) (1 3) (4 2) (2 1))
+;=> (((3 4) (1 3) (4 2) (2 1))
 ;    ((2 4) (4 3) (1 2) (3 1)))
+
+(assert (= (queens 4) '(((3 4) (1 3) (4 2) (2 1)) ((2 4) (4 3) (1 2) (3 1)))))
 
 (count (queens 4))
 ; => 2
