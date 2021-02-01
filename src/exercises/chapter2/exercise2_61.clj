@@ -9,8 +9,7 @@
   (cond (empty? set) (list x)
         (< x (first set)) (cons x set)
         (> x (first set)) (cons (first set) (adjoin-set x (rest set)))
-        (= x (first set)) (rest set))
-  )
+        (= x (first set)) set))
 
 (adjoin-set 1 '())
 ; => (1)
@@ -26,3 +25,6 @@
 
 (adjoin-set 6 '(1 2 3))
 ; => (1 2 3 6)
+
+(adjoin-set 6 '(1 6 3))
+; => (1 6 3)
