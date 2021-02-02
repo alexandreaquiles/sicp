@@ -1017,3 +1017,67 @@ one-through-four
 
 (intersection-set '(1 2) '(2 3))
 ; => (2)
+
+(defn entry [tree] (first tree))
+(defn left-branch [tree] (second tree))
+(defn right-branch [tree] (first (rest (rest tree))))
+(defn make-tree [entry left right]
+        (list entry left right))
+
+(defn element-of-set? [x set]
+  (cond (empty? set) false
+        (= x (entry set)) true
+        (< x (entry set)) (element-of-set? x (left-branch set))
+        (> x (entry set)) (element-of-set? x (right-branch set))))
+
+(def an-example-tree
+  (make-tree 7
+             (make-tree 3
+                        (make-tree 1 nil nil)
+                        (make-tree 5 nil nil))
+
+             (make-tree 9
+                        nil
+                        (make-tree 11 nil nil))))
+
+(element-of-set? 0 an-example-tree)
+; => false
+(element-of-set? 1 an-example-tree)
+; => true
+(element-of-set? 6 an-example-tree)
+; => false
+(element-of-set? 9 an-example-tree)
+; => true
+(element-of-set? 11 an-example-tree)
+; => true
+(element-of-set? 13 an-example-tree)
+; => false
+
+(defn adjoin-set [x set]
+  (cond (empty? set) (make-tree x nil nil)
+        (= x (entry set)) set
+        (< x (entry set)) (make-tree (entry set)
+                                     (adjoin-set x (left-branch set))
+                                     (right-branch set))
+        (> x (entry set)) (make-tree (entry set)
+                                     (left-branch set)
+                                     (adjoin-set x (right-branch set)))))
+
+(adjoin-set 6 an-example-tree)
+; => (7
+;       (3
+;          (1 nil nil)
+;          (5 nil
+;             (6 nil nil)))
+;       (9 nil
+;          (11 nil nil)))
+
+
+(adjoin-set 7
+  (adjoin-set 6
+    (adjoin-set 5
+      (adjoin-set 4
+        (adjoin-set 3
+          (adjoin-set 2
+            (adjoin-set 1 nil)))))))
+; => (1 nil (2 nil (3 nil (4 nil (5 nil (6 nil (7 nil nil)))))))
