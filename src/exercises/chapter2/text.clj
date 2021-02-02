@@ -958,10 +958,10 @@ one-through-four
         (= x (first set)) true
         :else (element-of-set? x (rest set))))
 
-(element-of-set? 3 '(1 2 3 4))
+(element-of-set? 3 '(3 1 2 4))
 ; => true
 
-(element-of-set? 9 '(1 2 3 4))
+(element-of-set? 9 '(3 1 2 4))
 ; => false
 
 (element-of-set? 'y '(x y z w))
