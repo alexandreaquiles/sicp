@@ -1081,3 +1081,19 @@ one-through-four
           (adjoin-set 2
             (adjoin-set 1 nil)))))))
 ; => (1 nil (2 nil (3 nil (4 nil (5 nil (6 nil (7 nil nil)))))))
+
+(defn key [record]
+  (first record))
+
+(def records '(("Andrew" 41) ("Alex" 40) ("Cloe" 70) ("Er" 73)))
+
+(defn lookup [given-key set-of-records]
+  (cond  (empty? set-of-records) false
+         (= given-key (key (first set-of-records))) (first set-of-records)
+         :else (lookup given-key (rest set-of-records))))
+
+(lookup "Alex" records)
+; => ("Alex" 40)
+
+(lookup "Car" records)
+; => false
