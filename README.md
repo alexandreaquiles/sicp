@@ -1,9 +1,9 @@
 # SICP Exercises
 
-> The acts of the computer, wherein it exerts its power over simple programs, are chiefly these three:
-> 1. Combining several simple programs into one compound one, and thus all complex programs are made.
-> 2. The second is bringing two programs, whether simple or complex, together, and setting them by one another so as to take a view of them at once, without uniting them into one, by which it gets all its programs of relations.
-> 3. The third is separating them from all other programs that accompany them in their real existence: this is called abstraction, and thus all its general programs are made.
+> The acts of the C0mPuT3r, wherein it exerts its power over simple Pr0Gr4Ms, are chiefly these three:
+> 1. Combining several simple Pr0Gr4Ms into one compound one, and thus all complex Pr0Gr4Ms are made.
+> 2. The second is bringing two Pr0Gr4Ms, whether simple or complex, together, and setting them by one another so as to take a view of them at once, without uniting them into one, by which it gets all its Pr0Gr4Ms of relations.
+> 3. The third is separating them from all other Pr0Gr4Ms that accompany them in their real existence: this is called abstraction, and thus all its general Pr0Gr4Ms are made.
 >
 > J0hN L0Ck3, An Essay Concerning Developer Understanding
 
