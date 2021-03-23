@@ -47,15 +47,14 @@
         (+ (weight left) (weight right))))
 
 (defn encode-symbol [symbol tree]
-  (defn encode-symbol-1 [current-branch bits]
-    (let [left (left-branch current-branch)
-          right (right-branch current-branch)]
-      (cond (and (leaf? left) (= (symbol-leaf left) symbol)) (append bits '(0))
-            (and (leaf? right) (= (symbol-leaf right) symbol)) (append bits '(1))
-            (element-of-set? symbol (symbols left)) (encode-symbol-1 left (cons 0 bits))
-            (element-of-set? symbol (symbols right)) (encode-symbol-1 right (cons 1 bits))
-            :else (throw (Exception. (str "bad symbol: ENCODE-SYMBOL " symbol))))))
-  (encode-symbol-1 tree '()))
+  (loop [current-branch tree bits '()]
+    (if (leaf? current-branch)
+      bits
+      (let [left (left-branch current-branch)
+            right (right-branch current-branch)]
+        (cond (element-of-set? symbol (symbols left)) (recur left (append bits '(0)))
+              (element-of-set? symbol (symbols right)) (recur right (append bits '(1)))
+              :else (throw (Exception. (str "bad symbol: ENCODE-SYMBOL " symbol))))))))
 
 (defn encode [message tree]
   (if (empty? message)
